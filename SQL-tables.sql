@@ -25,8 +25,8 @@ CREATE TABLE Post (
                 postChapo VARCHAR(100),
                 postContent VARCHAR(100),
                 postTag VARCHAR(100),
-                postCreation DATE NOT NULL,
-                postUpdate DATE NOT NULL,
+                postCreation DATETIME NOT NULL,
+                postUpdate DATETIME NOT NULL,
                 postStatus BOOLEAN NOT NULL,
                 idPerson INT NOT NULL,
                 PRIMARY KEY (idPost)
@@ -36,7 +36,7 @@ ENGINE=INNODB;
 CREATE TABLE Comment (
                 idComment INT AUTO_INCREMENT NOT NULL,
                 commentContent VARCHAR(100) NOT NULL,
-                commentCreation DATE NOT NULL,
+                commentCreation DATETIME NOT NULL,
                 commentStatus BOOLEAN NOT NULL,
                 idPost INT NOT NULL,
                 idPerson INT NOT NULL,
