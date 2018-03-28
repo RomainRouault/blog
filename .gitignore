@@ -1,2 +1,7 @@
 *.dia
 *.architect
+*.dia~
+*.architect~
+*.odt
+*.~lock
+*.lnk
