@@ -1,11 +1,9 @@
 <?php
 
-namespace Blog\Controller; 
+namespace Blog\Controller;
 
 use Blog\Model\PostManager;
 
-class BackEndController()
+class BackEndController
 {
-
-
 }
