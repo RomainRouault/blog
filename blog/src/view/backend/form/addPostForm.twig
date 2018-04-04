@@ -1,0 +1,32 @@
+{% extends "layout.twig" %}
+
+{% block title %}Ajouter un article{% endblock %}
+
+{% block content %}	
+
+<div style="padding : 50px">
+	<h1>Ajouter un article</h1>
+
+	<form>
+	  <div class="form-group">
+	    <label for="post-title">Titre</label>
+	    <input type="text" class="form-control" id="postTitle" aria-describedby="post-title" placeholder="Titre de l'article">
+	  </div>
+
+	    <div class="form-group">
+		    <label for="post-chapo">Chapô</label>
+		    <input type="text" class="form-control" id="postChapo" aria-describedby="post-chapô" placeholder="Texte du Chapô">
+		    <small id="chapoHelp" class="form-text text-muted">Texte court qui résume votre article.</small>
+	  	</div>
+
+	    <div class="form-group">
+		    <label for="post-content">Texte</label>
+		    <input type="text" class="form-control" id="postContent" aria-describedby="post-chapô" placeholder="Votre texte">
+	  	</div>
+
+	  <button type="submit" class="btn btn-primary">Poster</button>
+	</form>
+
+</div>
+
+{% endblock %}
