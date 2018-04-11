@@ -1,8 +1,10 @@
 <?php
+/**
+*Post Entity used by user to manipulate a post object 
+*
+*/
 
 namespace Blog\Model\Entity; 
-
-use Entity;
 
 class Post extends Entity
 {
@@ -58,7 +60,7 @@ class Post extends Entity
 	}
 
 	//setters//
-
+	
 	public function setPostTitle($postTitle)
 	{
 		if(is_string($postTitle))
