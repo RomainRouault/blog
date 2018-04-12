@@ -1,16 +1,22 @@
 <?php
-/**
-*Class PostController provides methodes for all related post features
-*
-*/
 
 namespace Blog\Controller;
 
 use Blog\Model\PostManager;
 use Blog\Model\Entity\Post;
 
+/**
+*Class PostController provides methodes for all related post features
+*
+*/
 class PostController extends Controller
 {   
+
+    public function postStatusFilter($postsList)
+    {
+
+    }
+
 
     /**
     *display published article in blog for frontend
@@ -23,7 +29,7 @@ class PostController extends Controller
     {       
             //call manager
            $postManager = new PostManager();
-           $blogPosts = $postManager->getPublishedPosts();
+           $blogPosts = $postManager->getPostsList();
 
             if ($blogPosts->rowCount() === 0) 
             {
@@ -31,7 +37,7 @@ class PostController extends Controller
             }
 
             //call view
-            echo $this->twig->render('blogView.html.twig', array('blogPosts' => $blogPosts));
+            echo $this->twig->render('blog_view.twig', array('blogPosts' => $blogPosts));
     }
 
     /**
@@ -42,7 +48,7 @@ class PostController extends Controller
     public function addPostForm()
     {   
         //call view
-        echo $this->twig->render('addPostForm.twig');
+        echo $this->twig->render('add_post_form.twig');
 
     }
 
@@ -88,7 +94,7 @@ class PostController extends Controller
     {
         //call manager
        $postManager = new PostManager();
-       $postsList = $postManager->getAllPostsList();
+       $postsList = $postManager->getPostsList();
 
         if ($postsList->rowCount() === 0) 
         {
@@ -96,8 +102,109 @@ class PostController extends Controller
         }
 
         //call view
-        echo $this->twig->render('postslist.twig', array('postsList' => $postsList));
+        echo $this->twig->render('posts_list.twig', array('postsList' => $postsList));
     }
+
+    /**
+    *Edit a post
+    * 
+    * @return mixed
+    */
+    public function postEdition($postid, $submit)
+    {
+        $postManager = new PostManager();
+        $postData = $postManager->getPost($postid);//check the post id
+
+        if (!empty($postData['idPost']))//if post id is on the DB
+        {
+            if ($submit) //if edition had been submited
+            {   
+                if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']))
+                {
+                    $updated_input = new Post($_POST);
+                    $edition = $postManager->updatePost($updated_input, $postid);
+
+                    if ($edition)//successful edition
+                    {
+                        header('Location: ../administrator/');
+                    }
+
+                    else
+                    {
+                        throw new \Exception('Modification de l\'article impossible.');
+                    }
+                }
+                else
+                {
+                    throw new \Exception('Merci de remplir tout les champs.');
+                }
+
+            }
+
+            else //call form view
+            {
+                echo $this->twig->render('edition_post_form.twig', array('post' => $postData));
+            }  
+        }
+
+        else
+        {
+            throw new \Exception('Article inconnu.');
+        }
+    }
+
+    /**
+    *Edit the status of a post
+    * 
+    * @return bool
+    */
+    public function postEditionStatus($postid, $status)
+    {
+        $postManager = new PostManager();
+        $status = $postManager->updatePostStatus($postid, $status);
+
+        if ($status)
+        {
+            header('Location: ../administrator/');
+        }
+
+        else
+        {
+            throw new \Exception('Article inconnu.');
+        }
+    }
+
+    /**
+    *Delete a post
+    * 
+    * @return bool
+    */
+    public function deletePost($postid)
+    {
+        $postManager = new PostManager();
+        //check the post id
+        $postData = $postManager->getPost($postid);
+
+        //if post id is on the DB
+        if (!empty($postData['idPost']))
+        {
+            $delete = $postManager->deletePost($postid);
+
+            //successful removal
+            if ($delete)
+            {
+                header('Location: ../administrator/');
+            }
+        }
+
+        else
+        {
+            throw new \Exception('Article inconnu.');
+        }
+
+    }
+
+
 
 
 }

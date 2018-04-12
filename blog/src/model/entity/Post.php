@@ -19,7 +19,7 @@ class Post extends Entity
 
 	//getters//
 
-	public function id()
+	public function postId()
 	{
 	return $this->id;
 	}
@@ -105,10 +105,8 @@ class Post extends Entity
 
 	public function setPostStatus($postStatus)
 	{
-		if(is_bool($postStatus))
-		{
-			$this->postStatus = $postStatus;
-		}
+			$postStatusInt = (int)$postStatus;
+			$this->postStatus = $postStatusInt;
 	}
 
 }
