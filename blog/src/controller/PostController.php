@@ -6,17 +6,11 @@ use Blog\Model\PostManager;
 use Blog\Model\Entity\Post;
 
 /**
-*Class PostController provides methodes for all related post features
+*Class PostController provides methods for all related post features
 *
 */
 class PostController extends Controller
 {   
-
-    public function postStatusFilter($postsList)
-    {
-
-    }
-
 
     /**
     *display published article in blog for frontend
@@ -38,6 +32,7 @@ class PostController extends Controller
 
             //call view
             echo $this->twig->render('blog_view.twig', array('blogPosts' => $blogPosts));
+            unset($_SESSION['message'], $_SESSION['message_origin']);
     }
 
     /**
@@ -55,7 +50,7 @@ class PostController extends Controller
     /**
     *check and add new post to DB
     *
-    * @return boolean
+    * @return bool
     */
     public function addPost()
     {   

@@ -6,8 +6,6 @@
 
 namespace Blog\Model;
 
-use Blog\Model\Post;
-
 class PostManager extends Manager
 {
     /**

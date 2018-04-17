@@ -31,6 +31,8 @@ abstract class Controller
         {
             return sprintf('../assets/%s', ltrim($asset, '/'));
         }));
+        //add session as a global in the Twig environment
+        $this->twig->addGlobal('session', $_SESSION);
     }
 
 

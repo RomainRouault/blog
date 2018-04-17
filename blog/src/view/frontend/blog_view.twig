@@ -1,14 +1,17 @@
-{% extends "layout.twig" %}
+{% extends "front_layout.twig" %}
 
 {% block title %}Blog{% endblock %}
 
 {% block content %}	
+	{% block nav %}
+	    {{ parent() }}
+	{% endblock %}
+	<h1 style="margin-bottom : 20px;">Blog</h1>
 
 	{% for blogPost in blogPosts %}
 		{# if post is published #}
 		{% if blogPost.postStatus == 1  %}
 			<div style="padding : 50px">
-				<h1 style="margin-bottom : 20px;">Blog</h1>
 				<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%">
 				    <h2>{{ blogPost.postTitle }}</h2>
 				    <p>{{ blogPost.postChapo }}</p>
@@ -17,6 +20,5 @@
 			</div>
 		{% endif %}
 	{% endfor %}
-
-<div style="margin-left : 50px"><a href="administrator/"><strong>Accès administration</strong></a></div>
+	
 {% endblock %}

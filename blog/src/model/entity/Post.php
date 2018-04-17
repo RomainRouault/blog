@@ -21,42 +21,42 @@ class Post extends Entity
 
 	public function postId()
 	{
-	return $this->id;
+		return $this->id;
 	}
 
 	public function postTitle()
 	{
-	return $this->postTitle;
+		return $this->postTitle;
 	}
 
 	public function postChapo()
 	{
-	return $this->postChapo;
+		return $this->postChapo;
 	}
 
 	public function postContent()
 	{
-	return $this->postContent;
+		return $this->postContent;
 	}
 
 	public function postTag()
 	{
-	return $this->postTag;
+		return $this->postTag;
 	}
 
 	public function postCreation()
 	{
-	return $this->postCreation;
+		return $this->postCreation;
 	}
 
 	public function postUpdate()
 	{
-	return $this->postUpdate;
+		return $this->postUpdate;
 	}
 
 	public function postStatus()
 	{
-	return $this->postStatus;
+		return $this->postStatus;
 	}
 
 	//setters//

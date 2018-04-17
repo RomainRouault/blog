@@ -1,0 +1,133 @@
+{% extends "layout.twig" %}
+
+{% block nav %}
+	{% if session.auth == 'true' %}
+		<nav>Bonjour {{ session.pseudo }}</nav>
+	{% endif %}
+{% endblock %}
+
+
+{% block footer %}
+<div style="margin-left : 50px">	
+	{% if session.auth == 'true' %}
+		<a href="logout"><strong>Déconnexion</strong></a>
+	{% else %}
+		<a data-toggle="modal" data-target="#auth" href="#"><strong>Connexion</strong></a>		
+	{% endif %}
+</div>
+{% endblock %}
+
+{% block modal %}
+
+	<!-- authentification modal -->
+	<div id="auth" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered ">
+		    <!-- Modal content-->
+		    <div class="modal-content">
+			    <div class="modal-header">
+				    <h4 class="modal-title">Connexion</h4>
+			    </div>
+			    <div class="modal-body">
+			    	<form method="post" action="auth?auth">
+
+						<div class="form-group">
+							<label for="post-title">Email</label>
+							<input type="email" class="form-control" id="auth_mail" name="userMail" aria-describedby="votre email" placeholder="Votre adresse email">
+						</div>
+
+					    <div class="form-group">
+						    <label for="post-chapo">Votre mot de passe</label>
+						    <input type="password" class="form-control" id="auth_mp" name="userPass" aria-describedby="votre mot de passe">
+					  	</div>
+
+					  	<button type="submit" class="btn btn-primary">Se connecter</button>
+					</form>
+
+					<p>Pas de compte? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#reg">Inscrivez-vous</a></p>
+
+				    <div class="modal-footer">
+				    	{% if session.message is defined and session.message_origin == 'auth' %}
+							<strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+						{% endif %}
+					    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
+					</div>
+			    </div>
+		  	</div>
+		</div>
+	</div>
+
+	 <!-- registration modal -->
+	<div id="reg" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered ">
+		    <!-- Modal content-->
+		    <div class="modal-content">
+			    <div class="modal-header">
+				    <h4 class="modal-title">Créer un compte</h4>
+			    </div>
+			    <div class="modal-body">
+			    	<form method="post" action="auth?reg">
+
+			    		
+						<div class="form-group">
+							<label for="post-title">Pseudonyme</label>
+							<input type="text" class="form-control" id="reg_pseudo" name="userPseudo" aria-describedby="votre pseudonyme" placeholder="Votre pseudonyme">
+			    			<small id="reg_pseudo" class="form-text text-muted">Les espace ne sont pas acceptés.</small>
+						</div>
+
+						<div class="form-group">
+							<label for="post-title">Email</label>
+							<input type="email" class="form-control" id="reg_mail" name="userMail" aria-describedby="votre email" placeholder="Votre adresse email">
+						</div>
+
+					    <div class="form-group">
+						    <label for="post-chapo">Votre mot de passe</label>
+						    <input type="password" class="form-control" id="reg_mp" name="userPass" aria-describedby="votre mot de passe">
+						    <small id="reg_pseudo" class="form-text text-muted">Les espace ne sont pas acceptés.</small>
+					  	</div>
+
+					  	<button type="submit" class="btn btn-primary">S'enregistrer</button>
+					</form>
+
+					<p>Pas de compte? <a href="#" data-toggle="reg" data-target="#reg">Inscrivez-vous</a></p>
+
+				    <div class="modal-footer">
+				    	{% if session.message is defined and session.message_origin == 'reg' %}
+							<strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+						{% endif %}
+					    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
+					</div>
+			    </div>
+		  	</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	{# Scripts for automaticaly display the modal if there is error message to display #}
+	{% if session.message is defined %}
+		
+		{% if session.message_origin == 'auth' %}
+
+			<script type='text/javascript'>
+				$(document).ready(function(){
+					$('#auth').modal('show');
+				})
+			</script>;
+
+		{% else %}
+
+			<script type='text/javascript'>
+				$(document).ready(function(){
+					$('#reg').modal('show');
+				})
+			</script>;
+			
+		{% endif %}
+
+
+	{% endif %}
+
+{% endblock %}
