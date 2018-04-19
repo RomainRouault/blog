@@ -1,7 +1,7 @@
 {% extends "layout.twig" %}
 
 {% block nav %}
-	{% if session.auth == 'true' %}
+	{% if session.pseudo is defined %}
 		<nav>Bonjour {{ session.pseudo }}</nav>
 	{% endif %}
 {% endblock %}
@@ -9,11 +9,16 @@
 
 {% block footer %}
 <div style="margin-left : 50px">	
-	{% if session.auth == 'true' %}
-		<a href="logout"><strong>Déconnexion</strong></a>
+	{% if session.pseudo is defined %}
+		<a href="/blog/authentification/logout"><strong>Déconnexion</strong></a>
 	{% else %}
 		<a data-toggle="modal" data-target="#auth" href="#"><strong>Connexion</strong></a>		
 	{% endif %}
+	{% if session.role == 'admin' %}
+		<a href="/blog/administrator/"><strong>Administration</strong></a>
+	{% endif %}
+
+
 </div>
 {% endblock %}
 
@@ -28,7 +33,7 @@
 				    <h4 class="modal-title">Connexion</h4>
 			    </div>
 			    <div class="modal-body">
-			    	<form method="post" action="auth?auth">
+			    	<form method="post" action="/blog/authentification/isregistred">
 
 						<div class="form-group">
 							<label for="post-title">Email</label>
@@ -65,7 +70,7 @@
 				    <h4 class="modal-title">Créer un compte</h4>
 			    </div>
 			    <div class="modal-body">
-			    	<form method="post" action="auth?reg">
+			    	<form method="post" action="/blog/authentification/adduser">
 
 			    		
 						<div class="form-group">
@@ -87,9 +92,7 @@
 
 					  	<button type="submit" class="btn btn-primary">S'enregistrer</button>
 					</form>
-
-					<p>Pas de compte? <a href="#" data-toggle="reg" data-target="#reg">Inscrivez-vous</a></p>
-
+					
 				    <div class="modal-footer">
 				    	{% if session.message is defined and session.message_origin == 'reg' %}
 							<strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>

@@ -44,10 +44,11 @@ CREATE TABLE Comment (
 )
 ENGINE=INNODB;
 
-/*----------------------------------------
-------Création des clés étrangères------
+/*-------------------------------------------
+---Création des clés étrangères et index----
 -----------------------------------------*/
 
+ALTER TABLE Person ADD UNIQUE(personMail);
 
 ALTER TABLE Post ADD CONSTRAINT person_post_fk
 FOREIGN KEY (idPerson)

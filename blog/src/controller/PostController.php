@@ -4,6 +4,7 @@ namespace Blog\Controller;
 
 use Blog\Model\PostManager;
 use Blog\Model\Entity\Post;
+use Blog\Controller\AuthentificationController;
 
 /**
 *Class PostController provides methods for all related post features
@@ -13,7 +14,7 @@ class PostController extends Controller
 {   
 
     /**
-    *display published article in blog for frontend
+    *Display published article in blog for frontend
     *
     * @return object Twig
     * @throws Exception
@@ -27,57 +28,15 @@ class PostController extends Controller
 
             if ($blogPosts->rowCount() === 0) 
             {
-                throw new \Exception('Il n\'y a pas encore d\'article publié');
+                $this->setMessage('Il n\'y a pas encore d\'article publié', 'back-modal');
+                header('Location:'.$_SERVER['PHP_SELF'].'/administrator/');
+                die();
             }
 
             //call view
             echo $this->twig->render('blog_view.twig', array('blogPosts' => $blogPosts));
+            //forget about the possible messages 
             unset($_SESSION['message'], $_SESSION['message_origin']);
-    }
-
-    /**
-    *display form for adding post in backend
-    *
-    * @return object Twig
-    */
-    public function addPostForm()
-    {   
-        //call view
-        echo $this->twig->render('add_post_form.twig');
-
-    }
-
-    /**
-    *check and add new post to DB
-    *
-    * @return bool
-    */
-    public function addPost()
-    {   
-        if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']))
-        {
-            $post = new Post($_POST);
-            $postManager = new PostManager();
-
-            $affectedlines = $postManager->addPost($post);
-
-            if ($affectedlines === false) 
-            {
-                throw new \Exception('Impossible d\'ajouter l\'article');
-            }
-
-            else 
-            {
-                header('Location: ../');
-            }
-
-
-        }
-
-        else
-        {
-            throw new \Exception('Merci de remplir la totalité des champs du formulaire');
-        }
     }
 
     /**
@@ -85,87 +44,164 @@ class PostController extends Controller
     *
     * @return object Twig
     */
-    public function postsList()
+    public function backBlog()
     {
         //call manager
        $postManager = new PostManager();
        $postsList = $postManager->getPostsList();
 
-        if ($postsList->rowCount() === 0) 
-        {
-            throw new \Exception('Il n\'y a pas encore d\'article publié');
-        }
-
         //call view
         echo $this->twig->render('posts_list.twig', array('postsList' => $postsList));
+        unset($_SESSION['message'], $_SESSION['message_origin']);
+    }
+
+
+    /**
+    *display form for adding post in backend. Add the post in DB if the form is submited.
+    *make standard check before add to DB.
+    *
+    * @return Mixed
+    */
+    public function newPost()
+    {
+        //if post have been submited
+        if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']))
+        {
+            $post = new Post($_POST);
+            $postManager = new PostManager();
+
+            $affectedlines = $postManager->addPost($post);
+
+            //if submission had failed, throw a message
+            if ($affectedlines === false) 
+            {
+                $this->setMessage('Impossible d\'ajouter l\'article', 'back-modal');
+                header('Location: /blog/administrator/post/newpost');
+                die();
+            }
+
+            else 
+            {
+                header('Location: /blog/administrator/');
+            }
+        }
+
+        //if a post have been submited, but not fully completed, throw a message
+        elseif (isset($_GET['addpost']))
+        {
+                $this->setMessage('Merci de remplir tout les champs', 'back-modal');
+                header('Location: /blog/administrator/post/newpost');
+                die();        
+        }
+
+        //if nothing have been submited
+        else
+        {
+        //call view
+        echo $this->twig->render('add_post_form.twig');
+        //forget about the possible messages 
+        unset($_SESSION['message'], $_SESSION['message_origin']);
+        }
     }
 
     /**
-    *Edit a post
+    *display form for edit post in backend. Update the post in DB if the form is submited.
+    *make standard check before update in DB.
     * 
     * @return mixed
     */
-    public function postEdition($postid, $submit)
+    public function editPost()
     {
-        $postManager = new PostManager();
-        $postData = $postManager->getPost($postid);//check the post id
-
-        if (!empty($postData['idPost']))//if post id is on the DB
+        //check if a post id given
+        if (isset($_GET['id']))
         {
-            if ($submit) //if edition had been submited
-            {   
+            //get the post id
+            $postid = intval($_GET['id']); 
+
+            //Retrieve the post data with the id given
+            $postManager = new PostManager();
+            $postData = $postManager->getPost($postid);
+
+            //if post data find on the DB
+            if (!empty($postData['idPost']))
+            {
+                //if the edition form have been submited
                 if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']))
                 {
                     $updated_input = new Post($_POST);
                     $edition = $postManager->updatePost($updated_input, $postid);
 
-                    if ($edition)//successful edition
+                    //successful edition, throw a message to confirm
+                    if ($edition)
                     {
-                        header('Location: ../administrator/');
+                        $this->setMessage('Article modifié.', 'back-modal');
+                        header('Location: /blog/administrator/');
+                        die();
                     }
 
+                    //failed edition, throw a message
                     else
                     {
-                        throw new \Exception('Modification de l\'article impossible.');
+                        $this->setMessage('Impossible de modifier l\'article.', 'back-modal');
+                        header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
+                        die();
                     }
+
                 }
+
+                //if a post have been submited, but not fully completed, throw a message
+                elseif (isset($_GET['submit']))
+                {
+                        $this->setMessage('Merci de remplir tout les champs', 'back-modal');
+                        header('Location: /blog/administrator/post/editpost?id='.$postData['idPost']);
+                        die();        
+                }
+
+                //if nothing have been submited, display the form edition view
                 else
                 {
-                    throw new \Exception('Merci de remplir tout les champs.');
+                    echo $this->twig->render('edition_post_form.twig', array('post' => $postData));
+                    //forget about the possible messages 
+                    unset($_SESSION['message'], $_SESSION['message_origin']);
                 }
 
             }
 
-            else //call form view
+            //no post id given, throw a message
+            else
             {
-                echo $this->twig->render('edition_post_form.twig', array('post' => $postData));
-            }  
-        }
-
-        else
-        {
-            throw new \Exception('Article inconnu.');
+                $this->setMessage('Article inconnu.', 'back-modal');
+                header('Location: /blog/administrator/');
+                die();
+            }
         }
     }
 
     /**
-    *Edit the status of a post
+    *Edit the status of a post (published or not)
     * 
     * @return bool
     */
-    public function postEditionStatus($postid, $status)
+    public function postEditionStatus()
     {
+        //get the post id
+        $postid = intval($_GET['id']); 
+        //get the post status
+        $status = (int)$_GET['publication'];
+
         $postManager = new PostManager();
         $status = $postManager->updatePostStatus($postid, $status);
 
         if ($status)
         {
-            header('Location: ../administrator/');
+            header('Location: /blog/administrator/');
         }
 
         else
         {
-            throw new \Exception('Article inconnu.');
+            $this->setMessage('Article inconnu.', 'back-modal');
+            header('Location: /blog/administrator/');
+            die();
         }
     }
 
@@ -174,8 +210,11 @@ class PostController extends Controller
     * 
     * @return bool
     */
-    public function deletePost($postid)
+    public function deletePost()
     {
+        //get the post id
+        $postid = intval($_GET['id']);
+
         $postManager = new PostManager();
         //check the post id
         $postData = $postManager->getPost($postid);
@@ -188,13 +227,16 @@ class PostController extends Controller
             //successful removal
             if ($delete)
             {
-                header('Location: ../administrator/');
+                header('Location: /blog/administrator/');
             }
         }
 
+        //unkown id, throw a message
         else
         {
-            throw new \Exception('Article inconnu.');
+            $this->setMessage('Article inconnu.', 'back-modal');
+            header('Location: /blog/administrator/');
+            die();
         }
 
     }

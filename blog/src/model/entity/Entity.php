@@ -1,11 +1,11 @@
 <?php
+
+namespace Blog\Model\Entity; 
+
 /**
 *Abstract Entity used to hydrate child classes entities 
 *
 */
-
-namespace Blog\Model\Entity; 
-
 abstract class Entity
 {
 	
@@ -21,8 +21,8 @@ abstract class Entity
 	{
 		foreach ($data as $attribut => $value)
 		{
-			//protect from xss for string values
-			if (is_string($value))
+			//protect from xss for string values (except for post content because of TinyMCE filters)
+			if (is_string($value) && ($attribut!=='postContent'))
 			{
 				$safeValue = htmlspecialchars($value);
 			}

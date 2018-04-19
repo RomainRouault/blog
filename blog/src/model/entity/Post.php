@@ -1,11 +1,11 @@
 <?php
+
+namespace Blog\Model\Entity; 
+
 /**
 *Post Entity used by user to manipulate a post object 
 *
 */
-
-namespace Blog\Model\Entity; 
-
 class Post extends Entity
 {
   protected $id,

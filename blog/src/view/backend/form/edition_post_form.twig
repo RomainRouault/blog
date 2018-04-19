@@ -1,4 +1,4 @@
-{% extends "back_layout.twig" %}
+{% extends "back_form_layout.twig" %}
 
 {% set title = 'Modifier un article' %}
 
@@ -26,7 +26,7 @@
 
 		    <div class="form-group">
 			    <label for="post-content">Texte</label>
-			    <input type="text" class="form-control" id="postContent" name="postContent" aria-describedby="post-chapô" value="{{ post.postContent }}">
+			    <textarea type="text" class="form-control" id="postContent" name="postContent" aria-describedby="post-chapô">{{ post.postContent }}</textarea>
 		  	</div>
 
 		  	<div class="btn-group btn-group-toggle" data-toggle="buttons">

@@ -3,7 +3,7 @@
 namespace Blog\Controller;
 
 /**
-*Abstract Class Controller instantiates the twig environement used for generate views
+*Abstract Class Controller instantiates the twig environement and manage message with a function
 *
 */
 abstract class Controller
@@ -29,12 +29,23 @@ abstract class Controller
         //add function "asset"
         $this->twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset)
         {
-            return sprintf('../assets/%s', ltrim($asset, '/'));
+            return sprintf('/blog/assets/%s', ltrim($asset, '/'));
         }));
         //add session as a global in the Twig environment
         $this->twig->addGlobal('session', $_SESSION);
     }
 
+
+    /**
+    *Set a message to display via the global session 
+    *
+    * @return string
+    */
+    public function setMessage($message, $origin)
+    {
+        $_SESSION['message'] = $message;
+        $_SESSION['message_origin'] = $origin;
+    }
 
 
 

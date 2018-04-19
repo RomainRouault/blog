@@ -1,0 +1,11 @@
+{% extends "back_layout.twig" %}
+
+
+{% block javascripts %}
+
+	{{ parent() }}
+
+	 <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=lyhfirrs9bvsqkovvgajgwt1zl895t7ihmsbbwmv8sfam6ly"></script> 
+	 <script>tinymce.init({ selector:'textarea' });</script>
+
+{% endblock %}

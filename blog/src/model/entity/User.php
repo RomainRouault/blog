@@ -1,11 +1,11 @@
 <?php
+
+namespace Blog\Model\Entity; 
+
 /**
 *User Entity used by user to manipulate a user object 
 *
 */
-
-namespace Blog\Model\Entity; 
-
 class User extends Entity
 {
 

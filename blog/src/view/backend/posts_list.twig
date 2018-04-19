@@ -15,13 +15,13 @@
 				    <h2>{{ post.postTitle }}</h2>
 				    <p>{{ post.creation_date_fr }}</p>
 				    <ul>
-				    	<li><a href="editpost?id={{ post.idPost  }}">Modifier</a></li>
-				    	<li><a href="delete?id={{ post.idPost }}">Supprimer</a></li>
+				    	<li><a href="/blog/administrator/post/editpost?id={{ post.idPost  }}">Modifier</a></li>
+				    	<li><a href="/blog/administrator/post/deletepost?id={{ post.idPost }}">Supprimer</a></li>
 				    	<li>
                 {% if post.postStatus == '1' %}
-                  <a href="editpost?id={{ post.idPost  }}&publication=0">Dépublier</a>
+                  <a href="/blog/administrator/post/posteditionstatus?id={{ post.idPost  }}&publication=0">Dépublier</a>
                 {% else %}
-                  <a href="editpost?id={{ post.idPost  }}&publication=1">Publier</a>  
+                  <a href="/blog/administrator/post/posteditionstatus?id={{ post.idPost  }}&publication=1">Publier</a>  
                 {% endif %}
               </li>
 				    </ul>
