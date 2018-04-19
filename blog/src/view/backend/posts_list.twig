@@ -1,0 +1,31 @@
+{% extends "back_layout.twig" %}
+
+{% set title = 'Liste des articles' %}
+
+{% block title %} {{title}} {% endblock %}
+
+{% block inner_title_breadcrumb %} {{title}} {% endblock %}
+
+{% block inner_title %} {{title}} {% endblock %}
+
+{% block inner_content %}
+		{% for post in postsList %}
+			<div style="padding : 20px">
+				<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 80%">
+				    <h2>{{ post.postTitle }}</h2>
+				    <p>{{ post.creation_date_fr }}</p>
+				    <ul>
+				    	<li><a href="editpost?id={{ post.idPost  }}">Modifier</a></li>
+				    	<li><a href="delete?id={{ post.idPost }}">Supprimer</a></li>
+				    	<li>
+                {% if post.postStatus == '1' %}
+                  <a href="editpost?id={{ post.idPost  }}&publication=0">Dépublier</a>
+                {% else %}
+                  <a href="editpost?id={{ post.idPost  }}&publication=1">Publier</a>  
+                {% endif %}
+              </li>
+				    </ul>
+				</div>
+			</div>
+		{% endfor %}
+{% endblock %}

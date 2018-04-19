@@ -6,35 +6,18 @@
 
 namespace Blog\Model;
 
-use Blog\Model\Post;
-
 class PostManager extends Manager
 {
-
-    /**
-    * Get the list of the published posts
-    * @return object PDO
-    * @throws PDOException
-    */
-    public function getPublishedPosts()
-    {
-        $db = $this->dbConnect();
-
-        $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr FROM post WHERE postStatus = 1 ORDER BY postCreation DESC');
-
-        return $req;
-    }
-
     /**
     * Get the list of all posts
     * @return object PDO
     * @throws PDOException
     */
-    public function getAllPostsList()
+    public function getPostsList()
     {
         $db = $this->dbConnect();
 
-        $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, postStatus FROM post ORDER BY postCreation DESC');
+        $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, postStatus, idPerson FROM post ORDER BY postCreation DESC');
 
         return $req;
     }
@@ -49,7 +32,7 @@ class PostManager extends Manager
     {
         $db = $this->dbConnect();
 
-        $req = $db->query('SELECT idPost, postTitle, postChapo, postContent, postTag, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus FROM post WHERE idPost = ?');
+        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, postTag, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus FROM post WHERE idPost = ?');
         $req->execute(array($idPost));
         $post = $req->fetch();
 
@@ -79,17 +62,34 @@ class PostManager extends Manager
     * @return object PDO 
     * @throws PDOException
     */
-    public function updatePost()
+    public function updatePost($updated_input, $postid)
     {
+        $db = $this->dbConnect();
+
+        $req = $db->prepare('UPDATE post SET postTitle= :title, postChapo= :chapo, postContent=  :content, postUpdate= NOW(), postStatus= :status WHERE idPost = :id');
+        $req->bindValue(':id', $postid);
+        $req->bindValue(':title', $updated_input->postTitle());
+        $req->bindValue(':chapo', $updated_input->postChapo());
+        $req->bindValue(':content', $updated_input->postContent());
+        $req->bindValue(':status', $updated_input->postStatus());
+        $affectedLines = $req->execute();
+
+        return $affectedLines;
     }
 
     /**
-    *Update the status of a post(published or not published)
+    * Update the status of a post (edition)
     * @return object PDO 
     * @throws PDOException
     */
-    public function updatePostStatus()
+    public function updatePostStatus($postid, $status)
     {
+        $db = $this->dbConnect();
+
+        $req = $db->prepare('UPDATE post SET postStatus=? WHERE idPost = ?');
+        $affectedLines = $req->execute(array($status, $postid));
+
+        return $affectedLines;
     }
 
     /**
@@ -97,8 +97,14 @@ class PostManager extends Manager
     * @return bool
     * @throws PDOException
     */
-    public function deletePost()
+    public function deletePost($idPost)
     {
+        $db = $this->dbConnect();
+
+        $req = $db->prepare('DELETE FROM post WHERE idPost = ?');
+        $req->execute(array($idPost));
+
+        return true;
     }
 
 }

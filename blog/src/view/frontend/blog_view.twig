@@ -1,0 +1,24 @@
+{% extends "front_layout.twig" %}
+
+{% block title %}Blog{% endblock %}
+
+{% block content %}	
+	{% block nav %}
+	    {{ parent() }}
+	{% endblock %}
+	<h1 style="margin-bottom : 20px;">Blog</h1>
+
+	{% for blogPost in blogPosts %}
+		{# if post is published #}
+		{% if blogPost.postStatus == 1  %}
+			<div style="padding : 50px">
+				<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%">
+				    <h2>{{ blogPost.postTitle }}</h2>
+				    <p>{{ blogPost.postChapo }}</p>
+				    <strong><p>{{ blogPost.creation_date_fr }}</p></strong>
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+	
+{% endblock %}
