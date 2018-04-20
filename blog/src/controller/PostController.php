@@ -65,25 +65,38 @@ class PostController extends Controller
     public function newPost()
     {
         //if post have been submited
-        if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']))
+        if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']) && !empty($_POST['token']) && !empty($_SESSION['token']))
         {
-            $post = new Post($_POST);
-            $postManager = new PostManager();
-
-            $affectedlines = $postManager->addPost($post);
-
-            //if submission had failed, throw a message
-            if ($affectedlines === false) 
+            // Token checking (prevent CRSF attack)
+            if ($_SESSION['token'] == $_POST['token']) 
             {
-                $this->setMessage('Impossible d\'ajouter l\'article', 'back-modal');
-                header('Location: /blog/administrator/post/newpost');
+
+                $post = new Post($_POST);
+                $postManager = new PostManager();
+
+                $affectedlines = $postManager->addPost($post);
+
+                //if submission had failed, throw a message
+                if ($affectedlines === false) 
+                {
+                    $this->setMessage('Erreur : Impossible d\'ajouter l\'article', 'back-modal');
+                    header('Location: /blog/administrator/post/newpost');
+                    die();
+                }
+
+                else 
+                {
+                    header('Location: /blog/administrator/');
+                }
+            }
+            //token dont match, throw a message
+            else
+            {
+                $this->setMessage('Erreur : Impossible d\'ajouter l\'article.', 'back-modal');
+                header('location: /blog/administrator/post/newpost');
                 die();
             }
 
-            else 
-            {
-                header('Location: /blog/administrator/');
-            }
         }
 
         //if a post have been submited, but not fully completed, throw a message
@@ -126,23 +139,36 @@ class PostController extends Controller
             if (!empty($postData['idPost']))
             {
                 //if the edition form have been submited
-                if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']))
+                if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']) && !empty($_POST['token']) && !empty($_SESSION['token']))
                 {
-                    $updated_input = new Post($_POST);
-                    $edition = $postManager->updatePost($updated_input, $postid);
 
-                    //successful edition, throw a message to confirm
-                    if ($edition)
+                    // Token checking (prevent CRSF attack)
+                    if ($_SESSION['token'] == $_POST['token']) 
                     {
-                        $this->setMessage('Article modifié.', 'back-modal');
-                        header('Location: /blog/administrator/');
-                        die();
+                        $updated_input = new Post($_POST);
+                        $edition = $postManager->updatePost($updated_input, $postid);
+
+                        //successful edition, throw a message to confirm
+                        if ($edition)
+                        {
+                            $this->setMessage('Article modifié.', 'back-modal');
+                            header('Location: /blog/administrator/');
+                            die();
+                        }
+
+                        //failed edition, throw a message
+                        else
+                        {
+                            $this->setMessage('Erreur : Impossible de modifier l\'article.', 'back-modal');
+                            header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
+                            die();
+                        }
                     }
 
-                    //failed edition, throw a message
+                    //token dont match, throw a message
                     else
                     {
-                        $this->setMessage('Impossible de modifier l\'article.', 'back-modal');
+                        $this->setMessage('Erreur : Impossible de modifier l\'article.', 'back-modal');
                         header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
                         die();
                     }
@@ -184,25 +210,39 @@ class PostController extends Controller
     */
     public function postEditionStatus()
     {
-        //get the post id
-        $postid = intval($_GET['id']); 
-        //get the post status
-        $status = (int)$_GET['publication'];
 
-        $postManager = new PostManager();
-        $status = $postManager->updatePostStatus($postid, $status);
-
-        if ($status)
+        // Token checking (prevent CRSF attack)
+        if ($_SESSION['token'] == $_GET['token']) 
         {
-            header('Location: /blog/administrator/');
+            //get the post id
+            $postid = (int)($_GET['id']); 
+            //get the post status
+            $status = (int)($_GET['publication']);
+
+            $postManager = new PostManager();
+            $status = $postManager->updatePostStatus($postid, $status);
+
+            if ($status)
+            {
+                header('Location: /blog/administrator/');
+            }
+
+            else
+            {
+                $this->setMessage('Article inconnu.', 'back-modal');
+                header('Location: /blog/administrator/');
+                die();
+            }
         }
 
+        //token dont match, throw a message
         else
         {
-            $this->setMessage('Article inconnu.', 'back-modal');
-            header('Location: /blog/administrator/');
+            $this->setMessage('Erreur : Impossible de modifier le statut article.', 'back-modal');
+            header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
             die();
         }
+
     }
 
     /**
@@ -212,36 +252,44 @@ class PostController extends Controller
     */
     public function deletePost()
     {
-        //get the post id
-        $postid = intval($_GET['id']);
+        // Token checking (prevent CRSF attack)
+        if ($_SESSION['token'] == $_GET['token']) 
+        { 
+            //get the post id
+            $postid = intval($_GET['id']);
 
-        $postManager = new PostManager();
-        //check the post id
-        $postData = $postManager->getPost($postid);
+            $postManager = new PostManager();
+            //check the post id
+            $postData = $postManager->getPost($postid);
 
-        //if post id is on the DB
-        if (!empty($postData['idPost']))
-        {
-            $delete = $postManager->deletePost($postid);
-
-            //successful removal
-            if ($delete)
+            //if post id is on the DB
+            if (!empty($postData['idPost']))
             {
+                $delete = $postManager->deletePost($postid);
+
+                //successful removal
+                if ($delete)
+                {
+                    header('Location: /blog/administrator/');
+                }
+            }
+
+            //unkown id, throw a message
+            else
+            {
+                $this->setMessage('Article inconnu.', 'back-modal');
                 header('Location: /blog/administrator/');
+                die();
             }
         }
 
-        //unkown id, throw a message
+        //token dont match, throw a message
         else
         {
-            $this->setMessage('Article inconnu.', 'back-modal');
-            header('Location: /blog/administrator/');
+            $this->setMessage('Erreur : Impossible de modifier le statut article.', 'back-modal');
+            header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
             die();
         }
-
     }
-
-
-
 
 }

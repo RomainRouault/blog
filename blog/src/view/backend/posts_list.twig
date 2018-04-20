@@ -16,12 +16,12 @@
 				    <p>{{ post.creation_date_fr }}</p>
 				    <ul>
 				    	<li><a href="/blog/administrator/post/editpost?id={{ post.idPost  }}">Modifier</a></li>
-				    	<li><a href="/blog/administrator/post/deletepost?id={{ post.idPost }}">Supprimer</a></li>
+				    	<li><a href="/blog/administrator/post/deletepost?id={{ post.idPost }}&token={{ session.token }}">Supprimer</a></li>
 				    	<li>
                 {% if post.postStatus == '1' %}
-                  <a href="/blog/administrator/post/posteditionstatus?id={{ post.idPost  }}&publication=0">Dépublier</a>
+                  <a href="/blog/administrator/post/posteditionstatus?id={{ post.idPost  }}&publication=0&token={{ session.token }}">Dépublier</a>
                 {% else %}
-                  <a href="/blog/administrator/post/posteditionstatus?id={{ post.idPost  }}&publication=1">Publier</a>  
+                  <a href="/blog/administrator/post/posteditionstatus?id={{ post.idPost  }}&publication=1&token={{ session.token }}">Publier</a>  
                 {% endif %}
               </li>
 				    </ul>

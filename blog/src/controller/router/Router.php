@@ -43,15 +43,12 @@ Class Router
 		//explode paths in request
 		$paths = explode('/', $parsedRequest['path']);
 
-		//check array and set paths attribute
-		foreach ($paths as $path)
-		{
-			if (is_string($path))
-			{
-				$this->paths = $paths;
-			}
-		}
+		//filter array and set paths attribute
+		$paths = array_filter($paths, 'is_string');
+		$paths = array_filter($paths);
 
+		//set attribute
+		$this->paths = $paths;
 	}
 
 	/**
@@ -61,12 +58,10 @@ Class Router
 	*/
 	public function backOrFront()
 	{
-
-		if ($this->paths['2'] == 'administrator')
-		//get controller for the backend
+		if (isset($this->paths['2']))
 		{
-			if (isset($_SESSION))
-			//get the good controller only if user is authentified
+			if ($this->paths['2'] == 'administrator')
+			//get controller for the backend
 			{
 				//check if the user is an admin
 				if ($_SESSION['role'] == 'admin')
@@ -81,10 +76,10 @@ Class Router
 				}
 			}
 
-			else //no session
+			//we are on the frontend
+			else
 			{
-				header('Location:'. $_SERVER['PHP_SELF']);
-				die();
+				$this->getControllerMethodFront();
 			}
 		}
 

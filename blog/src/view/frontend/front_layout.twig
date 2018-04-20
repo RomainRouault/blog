@@ -45,6 +45,8 @@
 						    <input type="password" class="form-control" id="auth_mp" name="userPass" aria-describedby="votre mot de passe">
 					  	</div>
 
+					  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
+
 					  	<button type="submit" class="btn btn-primary">Se connecter</button>
 					</form>
 
@@ -90,6 +92,8 @@
 						    <small id="reg_pseudo" class="form-text text-muted">Les espace ne sont pas acceptés.</small>
 					  	</div>
 
+					  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
+
 					  	<button type="submit" class="btn btn-primary">S'enregistrer</button>
 					</form>
 					
@@ -133,4 +137,6 @@
 
 	{% endif %}
 
+	{# Recaptcha : Prevent Brute Force attack and spam #}
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 {% endblock %}
