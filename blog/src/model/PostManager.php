@@ -18,8 +18,8 @@ class PostManager extends Manager
         $db = $this->dbConnect();
 
         $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, postStatus, idPerson FROM post ORDER BY postCreation DESC');
-
-        return $req;
+        $postslist = $req->fetchAll(); 
+        return $postslist;
     }
 
     /**
@@ -106,5 +106,6 @@ class PostManager extends Manager
 
         return true;
     }
+
 
 }

@@ -22,21 +22,24 @@ class PostController extends Controller
     */
     public function blog()
     {       
-            //call manager
-           $postManager = new PostManager();
-           $blogPosts = $postManager->getPostsList();
 
-            if ($blogPosts->rowCount() === 0) 
-            {
-                $this->setMessage('Il n\'y a pas encore d\'article publié', 'back-modal');
-                header('Location:'.$_SERVER['PHP_SELF'].'/administrator/');
-                die();
-            }
+        //call manager and get the posts data
+       $postManager = new PostManager();
+       $blogPosts = $postManager->getPostsList();
 
-            //call view
-            echo $this->twig->render('blog_view.twig', array('blogPosts' => $blogPosts));
-            //forget about the possible messages 
-            unset($_SESSION['message'], $_SESSION['message_origin']);
+        //if there is no page given, get page 1, else get the page
+        !isset($_GET['p']) ? $currentPage = 1 : $currentPage = $_GET['p'];
+
+       //get the number of pages to display
+       $pagination = $this->pagination($blogPosts, $currentPage);
+                
+        //splice the postsdatas according to the calculation above
+        $blogPosts = array_splice($blogPosts, $pagination['offset'], $pagination['limit']);
+
+        //call view
+        echo $this->twig->render('blog_view.twig', array('blogPosts' => $blogPosts, 'pagination' => $pagination));
+        //forget about the possible messages 
+        unset($_SESSION['message'], $_SESSION['message_origin']);
     }
 
     /**
@@ -291,5 +294,28 @@ class PostController extends Controller
             die();
         }
     }
+
+    /**
+    *calculation of the number of page(s) to display for blog pagination
+    *
+    * @param array($blogPosts), int($currentPage)
+    * @return array
+    */
+    public function pagination($blogPosts, $currentPage)
+    {
+        //count the total number of posts
+        $nbPost = count($blogPosts);
+        //calculation of the total number of page
+        $totalPage = ceil($nbPost/3);
+        //choose the number of posts to display per page
+        $limit = 3;
+
+        // calcul offset
+       $offset = ($currentPage - 1) * $limit; 
+
+       //return the data
+        return array('totalPage' => $totalPage, 'limit' => $limit, 'offset' => $offset, 'currentPage' => $currentPage);
+    }
+
 
 }

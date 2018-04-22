@@ -38,8 +38,8 @@ class AuthentificationController extends Controller
 	public function isRegistred()
 	{
         //first, check the user with recaptcha API (return true if success)
-        if ($this->recaptcha())
-        {
+        /*if ($this->recaptcha())
+        {*/
     		//check if the form had been fully completed
     		if (!empty($_POST['userMail']) && !empty($_POST['userPass']))
     		{
@@ -95,7 +95,7 @@ class AuthentificationController extends Controller
                 header('Location:'.$_SERVER['PHP_SELF']);
                 die();
     		}
-        }
+        /*}
 
         //recaptcha return false
         else
@@ -103,7 +103,7 @@ class AuthentificationController extends Controller
             $this->setMessage('Connexion impossible, merci de compléter tout les champs', 'auth');
             header('Location:'.$_SERVER['PHP_SELF']);
             die();   
-        }
+        }*/
 
 	}
 

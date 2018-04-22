@@ -7,7 +7,6 @@
 	    {{ parent() }}
 	{% endblock %}
 	<h1 style="margin-bottom : 20px;">Blog</h1>
-
 	{% for blogPost in blogPosts %}
 		{# if post is published #}
 		{% if blogPost.postStatus == 1  %}
@@ -20,5 +19,13 @@
 			</div>
 		{% endif %}
 	{% endfor %}
-	
+
+	{% include 'pagination.twig' with {
+		    currentPage: pagination.currentPage,
+		    paginationPath: 'blog',
+		    lastPage: pagination.totalPage,
+		    showAlwaysFirstAndLast: false
+		}
+	only %}
+
 {% endblock %}
