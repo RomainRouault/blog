@@ -1,0 +1,103 @@
+<?php
+
+namespace Blog\Model;
+
+/**
+*Class used to communicate with database for getting comment data
+*
+*/
+class CommentManager extends Manager
+{
+    /**
+    * Get the list of all comments for a post
+    * @param int $idPost
+    * @return array
+    * @throws PDOException
+    */
+    public function getCommentList($idPost)
+    {
+        $db = $this->dbConnect();
+
+        $req = $db->prepare('SELECT idComment, commentContent, DATE_FORMAT(commentCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS commentCreation, commentStatus, commentPseudo FROM comment WHERE idPost = ? ORDER BY commentCreation DESC');
+        $req->execute(array($idPost));
+        $commentList = $req->fetchAll(); 
+        return $commentList;
+    }
+
+    /**
+    * Get the list of all comments
+    * @return object PDO
+    * @throws PDOException
+    */
+    public function getAllCommentList()
+    {
+        $db = $this->dbConnect();
+
+        $req = $db->query('SELECT idComment, commentContent, DATE_FORMAT(commentCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS commentCreation, commentStatus, commentPseudo, idPost FROM comment ORDER BY commentCreation DESC');
+        $allCommentList = $req->fetchAll(); 
+        return $allCommentList;
+    }
+
+    /**
+    * Add a new comment (status unpublished)
+    * @return object PDO
+    * @throws PDOException
+    */
+    public function addComment($comment, $idPost)
+    {
+        $db = $this->dbConnect();
+
+        $req = $db->prepare('INSERT INTO comment (commentContent, commentCreation, commentStatus, commentPseudo, idPost) VALUES (:content,  NOW(), 0, :pseudo, :idPost)');
+        $req->bindValue(':content', $comment->commentContent());
+        $req->bindValue(':pseudo', $comment->commentPseudo());
+        $req->bindValue(':idPost', $idPost);
+        $affectedLines = $req->execute();
+
+        return $affectedLines;
+    }
+
+    /**
+    * Get the pending comment list (depublished comments) and the post associated data
+    * @return object PDO
+    * @throws PDOException
+    */
+    public function pendingCommentsList()
+    {
+        $db = $this->dbConnect();
+
+        $req = $db->query('SELECT comment.idComment, comment.commentContent, DATE_FORMAT(comment.commentCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS commentCreation, comment.commentStatus, comment.commentPseudo, post.idPost, post.postTitle FROM comment JOIN post ON post.idPost = comment.idPost WHERE comment.commentStatus = 0 ORDER BY comment.commentCreation DESC');
+        $pendingCommentsList = $req->fetchAll(); 
+        return $pendingCommentsList;        
+    }
+
+    /**
+    * Update the status of a comment (switch for publish to depublished)
+    * @return object PDO
+    * @throws PDOException
+    */
+    public function updateCommentStatus($idComment)
+    {
+        $db = $this->dbConnect();
+
+        $req = $db->prepare('UPDATE comment SET commentStatus=1 WHERE idComment = ?');
+        $affectedLines = $req->execute(array($idComment));
+
+        return $affectedLines;
+    }
+
+    /**
+    *Delete a comment
+    * @return bool
+    * @throws PDOException
+    */
+    public function deletePost($idComment)
+    {
+        $db = $this->dbConnect();
+
+        $req = $db->prepare('DELETE FROM comment WHERE idComment = ?');
+        $req->execute(array($idComment));
+
+        return true;
+    }
+
+}

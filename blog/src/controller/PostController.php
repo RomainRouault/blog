@@ -5,6 +5,8 @@ namespace Blog\Controller;
 use Blog\Model\PostManager;
 use Blog\Model\Entity\Post;
 use Blog\Controller\AuthentificationController;
+use Blog\Controller\CommentController;
+use Blog\Model\CommentManager;
 
 /**
 *Class PostController provides methods for all related post features
@@ -28,19 +30,72 @@ class PostController extends Controller
        $blogPosts = $postManager->getPostsList();
 
         //if there is no page given, get page 1, else get the page
-        !isset($_GET['p']) ? $currentPage = 1 : $currentPage = $_GET['p'];
+        !isset($_GET['p']) ? $currentPage = $_GET['p']= 1 : $currentPage = (int)$_GET['p'];
 
        //get the number of pages to display
        $pagination = $this->pagination($blogPosts, $currentPage);
-                
+        
+        //if page given is superior to maximum page given, redirect to first page
+       if($_GET['p'] > $pagination['totalPage'])
+       {
+            header('Location: /blog');
+            die();
+       }
+
         //splice the postsdatas according to the calculation above
         $blogPosts = array_splice($blogPosts, $pagination['offset'], $pagination['limit']);
 
         //call view
-        echo $this->twig->render('blog_view.twig', array('blogPosts' => $blogPosts, 'pagination' => $pagination));
+        echo $this->twig->render('blog.twig', array('blogPosts' => $blogPosts, 'pagination' => $pagination));
         //forget about the possible messages 
         unset($_SESSION['message'], $_SESSION['message_origin']);
     }
+
+    /**
+    *Display single article of blog with comments for frontend
+    *
+    * @return object Twig
+    * @throws Exception
+    * @throws Twig_Error
+    */
+    public function blogPost()
+    {
+        //if id of the post is given
+        if (isset($_GET['id']))
+        {
+            $postId = (int)$_GET['id'];
+            //call manager and get the post data
+           $postManager = new PostManager();
+           $blogPost = $postManager->getPost($postId);
+
+           //if blogPost exist
+           if ($blogPost)
+           {
+                //get the associated comments
+                $commentController = new CommentController();
+                $comments = $commentController->commentList($postId);
+
+                //call view
+                echo $this->twig->render('post_blog.twig', array('blogPost' => $blogPost, 'comments' => $comments));
+                //forget about the possible messages 
+                unset($_SESSION['message'], $_SESSION['message_origin']);
+           }
+
+           //if blogPost does not exist
+           else
+           {
+                $this->setMessage('Article inconnu.', 'front-modal');
+                header('location: /blog');
+                die();
+           }
+        }
+
+        //if post id is not given, redirect to home page
+        else
+        {
+            header('location: /blog');
+        }
+    }       
 
     /**
     *display view for administrator panel
@@ -49,12 +104,16 @@ class PostController extends Controller
     */
     public function backBlog()
     {
-        //call manager
+        //call post manager
        $postManager = new PostManager();
        $postsList = $postManager->getPostsList();
 
+       //call comment manager (couting the pendings comments)
+        $commentManager = New CommentManager();
+        $pendingCommentsList = $commentManager->pendingCommentsList();
+
         //call view
-        echo $this->twig->render('posts_list.twig', array('postsList' => $postsList));
+        echo $this->twig->render('posts_list.twig', array('postsList' => $postsList, 'pendingCommentsList' => $pendingCommentsList));
         unset($_SESSION['message'], $_SESSION['message_origin']);
     }
 
@@ -73,8 +132,9 @@ class PostController extends Controller
             // Token checking (prevent CRSF attack)
             if ($_SESSION['token'] == $_POST['token']) 
             {
-
+                //call entity "Post"
                 $post = new Post($_POST);
+                //call manager
                 $postManager = new PostManager();
 
                 $affectedlines = $postManager->addPost($post);
@@ -305,10 +365,10 @@ class PostController extends Controller
     {
         //count the total number of posts
         $nbPost = count($blogPosts);
-        //calculation of the total number of page
-        $totalPage = ceil($nbPost/3);
         //choose the number of posts to display per page
         $limit = 3;
+        //calculation of the total number of page
+        $totalPage = ceil($nbPost/$limit);
 
         // calcul offset
        $offset = ($currentPage - 1) * $limit; 

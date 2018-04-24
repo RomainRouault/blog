@@ -3,7 +3,7 @@
 namespace Blog\Controller;
 
 /**
-*Abstract Class Controller instantiates the twig environement and manage message with a function
+*Abstract Class Controller instantiates the twig environement, manage message and recaptcha API
 *
 */
 abstract class Controller
@@ -47,6 +47,31 @@ abstract class Controller
         $_SESSION['message_origin'] = $origin;
     }
 
+    /**
+    * Recaptcha API : checking the user  
+    *
+    * @return bool
+    */
+    public function recaptcha()
+    {
+        //captcha secret
+        $secret = "6LcXL0EUAAAAAPe1yBSEp3pL1JsIQgjQ6b4YN9y8";
+        // params return by the recaptcha
+        $response = $_POST['g-recaptcha-response'];
+        // User IP
+        $remoteip = $_SERVER['REMOTE_ADDR'];
+
+        // sent data to google
+        $api_url = "https://www.google.com/recaptcha/api/siteverify?secret=".$secret."&response=".$response."&remoteip=".$remoteip ;
+
+        // decode the json file returned
+        $decode = json_decode(file_get_contents($api_url), true);
+
+        if ($decode['success'] == true) 
+        {
+            return true;
+        }
+    }
 
 
 

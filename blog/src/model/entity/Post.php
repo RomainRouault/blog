@@ -19,7 +19,7 @@ class Post extends Entity
 
 	//getters//
 
-	public function postId()
+	public function idPost()
 	{
 		return $this->id;
 	}

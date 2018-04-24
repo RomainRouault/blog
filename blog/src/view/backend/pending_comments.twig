@@ -1,0 +1,25 @@
+{% extends "back_layout.twig" %}
+
+{% set title = 'Commentaires en attente' %}
+
+{% block title %} {{title}} {% endblock %}		
+
+{% block inner_title_breadcrumb %} {{title}} {% endblock %}
+
+{% block inner_title %} {{title}} {% endblock %}
+
+{% block nbcomments %}{{parent()}}{% endblock %}
+
+{% block inner_content %}
+		{% for comment in comments %}
+			<div style="padding : 20px">
+				<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 80%">
+					<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation }}</p>
+				    <p>{{ comment.commentContent }}</p>
+				    <p>Commentaire posté sur l'article <a href="/blog/post/blogpost?id={{comment.idPost}}">{{comment.postTitle}}</a></p>
+                  <a href="/blog/administrator/comment/commenteditionstatus?id={{ comment.idComment  }}&token={{ session.token }}">Publier</a>
+                  <a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a>  
+              </div>
+			</div>
+		{% endfor %}
+{% endblock %}

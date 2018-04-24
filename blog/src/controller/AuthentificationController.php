@@ -38,8 +38,8 @@ class AuthentificationController extends Controller
 	public function isRegistred()
 	{
         //first, check the user with recaptcha API (return true if success)
-        /*if ($this->recaptcha())
-        {*/
+        if ($this->recaptcha())
+        {
     		//check if the form had been fully completed
     		if (!empty($_POST['userMail']) && !empty($_POST['userPass']))
     		{
@@ -95,7 +95,7 @@ class AuthentificationController extends Controller
                 header('Location:'.$_SERVER['PHP_SELF']);
                 die();
     		}
-        /*}
+        }
 
         //recaptcha return false
         else
@@ -103,7 +103,7 @@ class AuthentificationController extends Controller
             $this->setMessage('Connexion impossible, merci de compléter tout les champs', 'auth');
             header('Location:'.$_SERVER['PHP_SELF']);
             die();   
-        }*/
+        }
 
 	}
 
@@ -184,30 +184,6 @@ class AuthentificationController extends Controller
         session_destroy();
         header('Location: /blog');
     }
-
-    /**
-    *
-    *
-    */
-    public function recaptcha()
-    {
-        //captcha secret
-        $secret = "6LcXL0EUAAAAAPe1yBSEp3pL1JsIQgjQ6b4YN9y8";
-        // params return by the recaptcha
-        $response = $_POST['g-recaptcha-response'];
-        // User IP
-        $remoteip = $_SERVER['REMOTE_ADDR'];
-
-        // sent data to google
-        $api_url = "https://www.google.com/recaptcha/api/siteverify?secret=".$secret."&response=".$response."&remoteip=".$remoteip ;
-
-        // decode the json file returned
-        $decode = json_decode(file_get_contents($api_url), true);
-
-        if ($decode['success'] == true) 
-        {
-            return true;
-        }
 
     }   
 

@@ -14,7 +14,7 @@
             <li><a href="{{ paginationPath }}{{ currentPage-1 }}">&larr;</a></li>
 
             {% for i in range(1, extremePagesLimit) if ( i < currentPage - nearbyPagesLimit ) %}
-                <li><a href="{{ paginationPath }}?p={{ i }}">{{ i }}</a></li>
+                <li><a href="{{ paginationPath }}{{ i }}">{{ i }}</a></li>
             {% endfor %}
 
             {% if extremePagesLimit + 1 < currentPage - nearbyPagesLimit %}
@@ -22,7 +22,7 @@
             {% endif %}
 
             {% for i in range(currentPage-nearbyPagesLimit, currentPage-1) if ( i > 0 ) %}
-                <li><a href="{{ paginationPath }}?p={{ i }}">{{ i }}</a></li>
+                <li><a href="{{ paginationPath }}{{ i }}">{{ i }}</a></li>
             {% endfor %}
 
         {% elseif showAlwaysFirstAndLast %}
@@ -33,7 +33,7 @@
 
         {% if currentPage < lastPage %}
             {% for i in range(currentPage+1, currentPage + nearbyPagesLimit) if ( i <= lastPage ) %}
-                <li><a href="{{ paginationPath }}?p={{ i }}">{{ i }}</a></li>
+                <li><a href="{{ paginationPath }}{{ i }}">{{ i }}</a></li>
             {% endfor %}
 
             {% if  (lastPage - extremePagesLimit) > (currentPage + nearbyPagesLimit) %}
@@ -41,12 +41,12 @@
             {% endif %}
 
             {% for i in range(lastPage - extremePagesLimit+1, lastPage) if ( i > currentPage + nearbyPagesLimit ) %}
-               <li><a href="{{ paginationPath }}?p={{ i }}">{{ i }}</a></li>
+               <li><a href="{{ paginationPath }}{{ i }}">{{ i }}</a></li>
             {% endfor %}
 
-            <li><a href="{{ paginationPath }}?p={{ currentPage+1 }}">&rarr;</a></li>
+            <li><a href="{{ paginationPath }}{{ currentPage+1 }}">&rarr;</a></li>
         {% elseif showAlwaysFirstAndLast %}
-                <li><a href="{{ paginationPath }}?p={{ currentPage+1 }}">Next</a></li>
+                <li><a href="{{ paginationPath }}{{ currentPage+1 }}">Next</a></li>
         {% endif %}
         </ul>
     </div>

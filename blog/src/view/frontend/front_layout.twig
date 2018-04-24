@@ -6,7 +6,6 @@
 	{% endif %}
 {% endblock %}
 
-
 {% block footer %}
 <div style="margin-left : 50px">	
 	{% if session.pseudo is defined %}
@@ -23,6 +22,27 @@
 {% endblock %}
 
 {% block modal %}
+
+	<!-- front modal (info) -->
+	<div id="front-modal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered ">
+		    <!-- Modal content-->
+		    <div class="modal-content">
+			    <div class="modal-header">
+				    <h4 class="modal-title">Information</h4>
+			    </div>
+			    <div class="modal-body">
+	                  {% if session.message is defined %}
+	                    <strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+	                  {% endif %}
+				    <div class="modal-footer">
+					    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
+					</div>
+			    </div>
+		  	</div>
+		</div>
+	</div>
+
 
 	<!-- authentification modal -->
 	<div id="auth" class="modal fade" role="dialog">
@@ -124,6 +144,12 @@
 				})
 			</script>;
 
+		{% elseif session.message_origin == 'front-modal' %}
+			<script type='text/javascript'>
+				$(document).ready(function(){
+					$('#front-modal').modal('show');
+				})
+			</script>;
 		{% else %}
 
 			<script type='text/javascript'>

@@ -1,16 +1,16 @@
 <?php
-/**
-*Class used to communicate with database 
-*
-*/
 
 namespace Blog\Model;
 
+/**
+*Class used to communicate with database for getting post data
+*
+*/
 class PostManager extends Manager
 {
     /**
     * Get the list of all posts
-    * @return object PDO
+    * @return array
     * @throws PDOException
     */
     public function getPostsList()
@@ -25,14 +25,14 @@ class PostManager extends Manager
     /**
     * Get a post data
     * @param int $idPost
-    * @return object PDO 
+    * @return array 
     * @throws PDOException
     */
     public function getPost($idPost)
     {
         $db = $this->dbConnect();
 
-        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, postTag, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus FROM post WHERE idPost = ?');
+        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus FROM post WHERE idPost = ?');
         $req->execute(array($idPost));
         $post = $req->fetch();
 

@@ -1,0 +1,31 @@
+{% extends "front_layout.twig" %}
+
+{% block title %}Blog{% endblock %}
+
+{% block content %}	
+	{% block nav %}
+	    {{ parent() }}
+	{% endblock %}
+	<h1 style="margin-bottom : 20px;">Blog</h1>
+	{% for blogPost in blogPosts %}
+		{# if post is published #}
+		{% if blogPost.postStatus == 1  %}
+			<div style="padding : 50px">
+				<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%">
+				    <h2><a href="/blog/post/blogpost?id={{ blogPost.idPost }}">{{ blogPost.postTitle }}</a></h2>
+				    <p>{{ blogPost.postChapo }}</p>
+				    <strong><p>{{ blogPost.creation_date_fr }}</p></strong>
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+
+	{% include 'pagination.twig' with {
+		    currentPage: pagination.currentPage,
+		    paginationPath: "/blog?p=",
+		    lastPage: pagination.totalPage,
+		    showAlwaysFirstAndLast: false
+		}
+	only %}
+
+{% endblock %}

@@ -1,11 +1,11 @@
 <?php
-/**
-*Class used to communicate with database 
-*
-*/
 
 namespace Blog\Model;
 
+/**
+*Class used to communicate with database for getting user data
+*
+*/
 class UserManager extends Manager
 {
 
