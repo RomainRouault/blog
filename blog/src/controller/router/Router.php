@@ -69,10 +69,7 @@ class Router
                     header('Location:'. $_SERVER['PHP_SELF']);
                     die();
                 }
-            }
-
-            //we are on the frontend
-            else {
+            } else { //we are on the frontend
                 $this->getControllerMethodFront();
             }
         } else {
@@ -103,24 +100,17 @@ class Router
             $method = $this->paths['4'];
 
             //test if the method/path exist
-            if(method_exists($controller, $method)) {
+            if (method_exists($controller, $method)) {
                 //instantiate controller
                 $controller = new $controller();
                 //call method
                 $controller->$method();
-            }
-
-            //if method/path is unknow, display the main backend page
-            else {
+            } else { //if method/path is unknow, display the main backend page
                 $PostController = new PostController();
                 //default main page
-                $PostController->backBlog();                
+                $PostController->backBlog();
             }
-
-        }
-
-        //if there is no fourth path, we want the main page
-        else {
+        } else { //if there is no fourth path, we want the main page
             $PostController = new PostController();
             //default backend page
             $PostController->backBlog();
@@ -147,27 +137,20 @@ class Router
             $method = $this->paths['3'];
 
             //test if the method/path exist
-            if(method_exists($controller, $method)) {
+            if (method_exists($controller, $method)) {
                 //instantiate controller
                 $controller = new $controller();
                 //call method
                 $controller->$method();
-            }
-
-            // if method/path does not exist
-            else {
+            } else { // if method/path does not exist
                 $PostController = new PostController();
                 //default main page
-                $PostController->Blog();                
+                $PostController->Blog();
             }
-
-        }
-        //if there is no third path, we want the main page
-        else {
+        } else { //if there is no third path, we want the main page
             $PostController = new PostController();
             //default main page
             $PostController->Blog();
         }
     }
-
 }

@@ -45,7 +45,7 @@ class AuthentificationController extends Controller
             $pendingUser = $this->getUser();
 
             //if not match
-            if ($pendingUser == false) {
+            if ($pendingUser === false) {
                 $this->setMessage('Mot de passe inconnu ou/et email inconnu.', 'auth');
                 header('Location:'.$_SERVER['PHP_SELF']);
             } else { //if mail check is ok, check the password
