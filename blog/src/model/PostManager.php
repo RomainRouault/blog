@@ -18,14 +18,14 @@ class PostManager extends Manager
         $db = $this->dbConnect();
 
         $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, postStatus, idPerson FROM post ORDER BY postCreation DESC');
-        $postslist = $req->fetchAll(); 
+        $postslist = $req->fetchAll();
         return $postslist;
     }
 
     /**
     * Get a post data
     * @param int $idPost
-    * @return array 
+    * @return array
     * @throws PDOException
     */
     public function getPost($idPost)
@@ -41,7 +41,7 @@ class PostManager extends Manager
 
     /**
     * Add a new post
-    * @return object PDO 
+    * @return object PDO
     * @throws PDOException
     */
     public function addPost($post)
@@ -59,7 +59,7 @@ class PostManager extends Manager
 
     /**
     * Update a post (edition)
-    * @return object PDO 
+    * @return object PDO
     * @throws PDOException
     */
     public function updatePost($updated_input, $postid)
@@ -79,7 +79,7 @@ class PostManager extends Manager
 
     /**
     * Update the status of a post (edition)
-    * @return object PDO 
+    * @return object PDO
     * @throws PDOException
     */
     public function updatePostStatus($postid, $status)
@@ -106,6 +106,4 @@ class PostManager extends Manager
 
         return true;
     }
-
-
 }

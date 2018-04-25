@@ -20,7 +20,7 @@ class CommentManager extends Manager
 
         $req = $db->prepare('SELECT idComment, commentContent, DATE_FORMAT(commentCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS commentCreation, commentStatus, commentPseudo FROM comment WHERE idPost = ? ORDER BY commentCreation DESC');
         $req->execute(array($idPost));
-        $commentList = $req->fetchAll(); 
+        $commentList = $req->fetchAll();
         return $commentList;
     }
 
@@ -34,7 +34,7 @@ class CommentManager extends Manager
         $db = $this->dbConnect();
 
         $req = $db->query('SELECT idComment, commentContent, DATE_FORMAT(commentCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS commentCreation, commentStatus, commentPseudo, idPost FROM comment ORDER BY commentCreation DESC');
-        $allCommentList = $req->fetchAll(); 
+        $allCommentList = $req->fetchAll();
         return $allCommentList;
     }
 
@@ -66,8 +66,8 @@ class CommentManager extends Manager
         $db = $this->dbConnect();
 
         $req = $db->query('SELECT comment.idComment, comment.commentContent, DATE_FORMAT(comment.commentCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS commentCreation, comment.commentStatus, comment.commentPseudo, post.idPost, post.postTitle FROM comment JOIN post ON post.idPost = comment.idPost WHERE comment.commentStatus = 0 ORDER BY comment.commentCreation DESC');
-        $pendingCommentsList = $req->fetchAll(); 
-        return $pendingCommentsList;        
+        $pendingCommentsList = $req->fetchAll();
+        return $pendingCommentsList;
     }
 
     /**
@@ -99,5 +99,4 @@ class CommentManager extends Manager
 
         return true;
     }
-
 }

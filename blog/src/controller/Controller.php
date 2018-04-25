@@ -8,10 +8,10 @@ namespace Blog\Controller;
 */
 abstract class Controller
 {
-	/**
-	* Store the templates directories
-	* @var array
-	*/
+    /**
+    * Store the templates directories
+    * @var array
+    */
     protected $twigloader;
 
     /**
@@ -21,14 +21,13 @@ abstract class Controller
     protected $twig;
 
     public function __construct()
-    {   
-    	//load the templates for Twig
+    {
+        //load the templates for Twig
         $this->twigloader = new \Twig_Loader_Filesystem(array('src/view', 'src/view/frontend', 'src/view/backend', 'src/view/frontend/form', 'src/view/backend/form'));
         //load the Twig environment
         $this->twig = new \Twig_Environment($this->twigloader);
         //add function "asset"
-        $this->twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset)
-        {
+        $this->twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset) {
             return sprintf('/blog/assets/%s', ltrim($asset, '/'));
         }));
         //add session as a global in the Twig environment
@@ -37,7 +36,7 @@ abstract class Controller
 
 
     /**
-    *Set a message to display via the global session 
+    *Set a message to display via the global session
     *
     * @return string
     */
@@ -48,7 +47,7 @@ abstract class Controller
     }
 
     /**
-    * Recaptcha API : checking the user  
+    * Recaptcha API : checking the user
     *
     * @return bool
     */
@@ -67,12 +66,8 @@ abstract class Controller
         // decode the json file returned
         $decode = json_decode(file_get_contents($api_url), true);
 
-        if ($decode['success'] == true) 
-        {
+        if ($decode['success'] == true) {
             return true;
         }
     }
-
-
-
 }
