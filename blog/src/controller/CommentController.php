@@ -141,7 +141,7 @@ class CommentController extends Controller
             }
         } else { //token dont match, throw a message
             $this->setMessage('Erreur : Impossible de modifier le statut article.', 'back-modal');
-            header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
+            header('location: /blog/administrator/post/editpost?id='.$_GET['id']);
         }
     }
 }

@@ -95,13 +95,8 @@ class PostController extends Controller
         $postManager = new PostManager();
         $postsList = $postManager->getPostsList();
 
-        //call comment manager (couting the pendings comments)
-        $commentManager = new CommentManager();
-        $pendingCommentsList = $commentManager->pendingCommentsList();
-        $NbPendingComments = count($pendingCommentsList);
-
         //call view
-        echo $this->twig->render('posts_list.twig', array('postsList' => $postsList, 'pendingCommentsList' => $pendingCommentsList));
+        echo $this->twig->render('posts_list.twig', array('postsList' => $postsList));
         $this->unsetMessage();
     }
 
@@ -226,7 +221,7 @@ class PostController extends Controller
             }
         } else { //token dont match, throw a message
             $this->setMessage('Erreur : Impossible de modifier le statut article.', 'back-modal');
-            header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
+            header('location: /blog/administrator/post/editpost?id='.$_GET['id']);
         }
     }
 

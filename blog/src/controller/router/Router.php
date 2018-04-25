@@ -67,7 +67,6 @@ class Router
                     $this->getControllerMethodBack();
                 } else { //not an admin
                     header('Location:'. $_SERVER['PHP_SELF']);
-                    die();
                 }
             } else { //we are on the frontend
                 $this->getControllerMethodFront();
