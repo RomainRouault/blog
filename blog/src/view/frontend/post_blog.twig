@@ -19,9 +19,25 @@
 							<div style="border:2px solid; border-radius: 5px; padding : 10px;">
 								<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation }}</p>
 							    <p>{{ comment.commentContent }}</p>
+							    {% if session.role == 'admin' %}
+							    	<a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a>
+							    {% endif %}
 							</div>
 						</div>
+					{# if post is not published and you are an admin, display the comm with options #}
+					{% elseif comment.commentStatus == 0 and session.role == 'admin' %}
+						<div style="padding : 50px">
+							<div style="border:2px solid; border-radius: 5px; border-color : green; padding : 10px;">
+								<p><strong>Commentaire en attente :</strong><p>
+								<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation }}</p>
+							    <p>{{ comment.commentContent }}</p>
+							    <a href="/blog/administrator/comment/commenteditionstatus?id={{ comment.idComment  }}&token={{ session.token }}">Publier</a>
+                  				<a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a> 
+							</div>
+						</div>
+
 					{% endif %}
+
 				{% endfor %}
 			{% else %}
 				<p>Pas encore de commentaires publiés sur cet article.</p>

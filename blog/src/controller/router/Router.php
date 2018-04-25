@@ -3,6 +3,7 @@
 namespace Blog\Controller\Router;
 
 use Blog\Controller\PostController;
+use Blog\Controller\CommentController;
 use Blog\Controller\AuthentificationController;
 
 /**
@@ -79,6 +80,7 @@ class Router
             $this->getControllerMethodFront();
         }
     }
+
     /**
     * Automatic assignment of the controller and is associated method via the paths for the backend
     *
@@ -100,10 +102,21 @@ class Router
             //method = fourth path
             $method = $this->paths['4'];
 
-            //instantiate controller
-            $controller = new $controller();
-            //call method
-            $controller->$method();
+            //test if the method/path exist
+            if(method_exists($controller, $method)) {
+                //instantiate controller
+                $controller = new $controller();
+                //call method
+                $controller->$method();
+            }
+
+            //if method/path is unknow, display the main backend page
+            else {
+                $PostController = new PostController();
+                //default main page
+                $PostController->backBlog();                
+            }
+
         }
 
         //if there is no fourth path, we want the main page
@@ -133,12 +146,22 @@ class Router
             //method = third path
             $method = $this->paths['3'];
 
-            //instantiate controller
-            $controller = new $controller();
-            //call method
-            $controller->$method();
-        }
+            //test if the method/path exist
+            if(method_exists($controller, $method)) {
+                //instantiate controller
+                $controller = new $controller();
+                //call method
+                $controller->$method();
+            }
 
+            // if method/path does not exist
+            else {
+                $PostController = new PostController();
+                //default main page
+                $PostController->Blog();                
+            }
+
+        }
         //if there is no third path, we want the main page
         else {
             $PostController = new PostController();
@@ -146,4 +169,5 @@ class Router
             $PostController->Blog();
         }
     }
+
 }

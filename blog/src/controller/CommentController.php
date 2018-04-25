@@ -57,34 +57,22 @@ class CommentController extends Controller
                 if ($affectedlines === false) {
                     $this->setMessage('Erreur : Impossible d\'ajouter le commentaire', 'front-modal');
                     header('Location: /blog/post/blogpost?id='.$_GET['id']);
-                    die();
                 } else {
                     $this->setMessage('Votre commentaire a été soumis à un administrateur pour validation', 'front-modal');
                     header('Location: /blog/post/blogpost?id='.$_GET['id']);
-                    die();
                 }
-            }
-            //token dont match, throw a message
-            else {
+            } else { //token dont match, throw a message
                 $this->setMessage('Erreur : Impossible d\'ajouter le commentaire.', 'front-modal');
                 header('location: /blog/post/blogpost?id='.$_GET['id']);
-                die();
             }
-        }
-
-        //if a comment have been submited, but not fully completed, throw a message
-        else {
+        } else { //if a comment have been submited, but not fully completed, throw a message
             $this->setMessage('Merci de remplir tout les champs', 'front-modal');
             header('Location: /blog/post/blogpost?id='.$_GET['id']);
-            die();
         }
-        /*}
-
-        else
-        {
+        /*} else {
             $this->setMessage('Erreur : Impossible d\'ajouter le commentaire.', 'front-modal');
             header('location: /blog/post/blogpost?id='.$_GET['id']);
-            die();
+
         }*/
     }
 
@@ -101,7 +89,7 @@ class CommentController extends Controller
 
         //display the view with the data
         echo $this->twig->render('pending_comments.twig', array('comments' => $pendingCommentsList));
-        unset($_SESSION['message'], $_SESSION['message_origin']);
+        $this->unsetMessage();
     }
 
     public function commentEditionStatus()
@@ -120,15 +108,10 @@ class CommentController extends Controller
             } else {
                 $this->setMessage('Commentaire inconnu.', 'back-modal');
                 header('location: /blog/administrator/comment/pendingcomments');
-                die();
             }
-        }
-
-        //token dont match, throw a message
-        else {
+        } else { //token dont match, throw a message
             $this->setMessage('Erreur : Impossible de modifier le statut du commentaire.', 'back-modal');
             header('location: /blog/administrator/comment/pendingcomments');
-            die();
         }
     }
 
@@ -152,22 +135,13 @@ class CommentController extends Controller
             if ($delete) {
                 $this->setMessage('Commentaire supprimé.', 'back-modal');
                 header('Location: /blog/administrator/');
-                die();
-            }
-
-            //unkown id, throw a message
-            else {
+            } else { //unkown id, throw a message
                 $this->setMessage('Commentaire inconnu.', 'back-modal');
                 header('Location: /blog/administrator/');
-                die();
             }
-        }
-
-        //token dont match, throw a message
-        else {
+        } else { //token dont match, throw a message
             $this->setMessage('Erreur : Impossible de modifier le statut article.', 'back-modal');
             header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
-            die();
         }
     }
 }

@@ -7,29 +7,25 @@
 *Instantiate the router with URI request
 *Catching differents exceptions
 */
+
+//start session
 session_start();
+
+//autoload
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Blog\Controller\Router\Router;
 
-try
-{
-	new Router($_SERVER['REQUEST_URI']);
-}
-
-//exceptions management
-catch (PDOException $e)
-{
-	  echo 'La connexion a échoué.<br />';
-	  echo 'Informations : [', $e->getCode(), '] ', $e->getMessage(); 
-}
-
-catch (Twig_Error $e)
-{
-	echo 'Erreur Twig :' . $e->getMessage();
-}
-
-catch(Exception $e)
-{
+//launch the try/catch loop
+try {
+    //get the URI and send it to the Router
+    new Router($_SERVER['REQUEST_URI']);
+    //catch different exception
+} catch (PDOException $e) {
+    echo 'La connexion a échoué.<br />';
+    echo 'Informations : [', $e->getCode(), '] ', $e->getMessage();
+} catch (Twig_Error $e) {
+    echo 'Erreur Twig :' . $e->getMessage();
+} catch (Exception $e) {
     echo 'Erreur : ' . $e->getMessage();
 }

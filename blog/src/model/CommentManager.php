@@ -95,8 +95,8 @@ class CommentManager extends Manager
         $db = $this->dbConnect();
 
         $req = $db->prepare('DELETE FROM comment WHERE idComment = ?');
-        $req->execute(array($idComment));
+        $delete = $req->execute(array($idComment));
 
-        return true;
+        return $delete;
     }
 }

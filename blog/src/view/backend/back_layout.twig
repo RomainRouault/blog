@@ -1,7 +1,5 @@
 {% extends "layout.twig" %}
 
-{% set NbPendingComments = pendingCommentsList|length %}
-
 {% block head %}
 	{% block stylesheets %}
 	{{ parent() }}
@@ -38,7 +36,7 @@
               <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Commentaires en attente">
                 <a class="nav-link" href="/blog/administrator/comment/pendingcomments">
                   <i class="fa fa-fw fa-clock-o"></i>
-                  <span class="nav-link-text">Commentaires en attente</span>
+                  <span class="nav-link-text">{% if pendingCommentsCounter() > 0 %} {{pendingCommentsCounter()}} {% else %}Aucun {% endif %}commentaires en attente</span>
                 </a>
               </li>
 
@@ -54,7 +52,7 @@
             
               <li class="nav-item">
                 <p class="nav-link" style="margin-right : 85px;">
-                  Bonjour {{ session.pseudo }}, vous avez <a href="/blog/administrator/comment/pendingcomments">{{ NbPendingComments }} commentaire(s) en attente</a>.
+                  Bonjour {{ session.pseudo }}, vous avez <a href="/blog/administrator/comment/pendingcomments">{{ pendingCommentsCounter() }} commentaire(s) en attente</a>.
                 </p>
               </li>
 

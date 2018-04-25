@@ -102,8 +102,8 @@ class PostManager extends Manager
         $db = $this->dbConnect();
 
         $req = $db->prepare('DELETE FROM post WHERE idPost = ?');
-        $req->execute(array($idPost));
+        $delete = $req->execute(array($idPost));
 
-        return true;
+        return $delete;
     }
 }

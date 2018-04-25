@@ -38,7 +38,6 @@ class PostController extends Controller
         //if page given is superior to maximum page given, redirect to first page
         if ($_GET['p'] > $pagination['totalPage']) {
             header('Location: /blog');
-            die();
         }
 
         //splice the postsdatas according to the calculation above
@@ -47,7 +46,7 @@ class PostController extends Controller
         //call view
         echo $this->twig->render('blog.twig', array('blogPosts' => $blogPosts, 'pagination' => $pagination));
         //forget about the possible messages
-        unset($_SESSION['message'], $_SESSION['message_origin']);
+        $this->unsetMessage();
     }
 
     /**
@@ -75,19 +74,12 @@ class PostController extends Controller
                 //call view
                 echo $this->twig->render('post_blog.twig', array('blogPost' => $blogPost, 'comments' => $comments));
                 //forget about the possible messages
-                unset($_SESSION['message'], $_SESSION['message_origin']);
-            }
-
-            //if blogPost does not exist
-            else {
+                $this->unsetMessage();
+            } else { //if blogPost does not exist
                 $this->setMessage('Article inconnu.', 'front-modal');
                 header('location: /blog');
-                die();
             }
-        }
-
-        //if post id is not given, redirect to home page
-        else {
+        } else { //if post id is not given, redirect to home page
             header('location: /blog');
         }
     }
@@ -106,10 +98,11 @@ class PostController extends Controller
         //call comment manager (couting the pendings comments)
         $commentManager = new CommentManager();
         $pendingCommentsList = $commentManager->pendingCommentsList();
+        $NbPendingComments = count($pendingCommentsList);
 
         //call view
         echo $this->twig->render('posts_list.twig', array('postsList' => $postsList, 'pendingCommentsList' => $pendingCommentsList));
-        unset($_SESSION['message'], $_SESSION['message_origin']);
+        $this->unsetMessage();
     }
 
 
@@ -136,32 +129,21 @@ class PostController extends Controller
                 if ($affectedlines === false) {
                     $this->setMessage('Erreur : Impossible d\'ajouter l\'article', 'back-modal');
                     header('Location: /blog/administrator/post/newpost');
-                    die();
                 } else {
                     header('Location: /blog/administrator/');
                 }
-            }
-            //token dont match, throw a message
-            else {
+            } else { //token dont match, throw a message
                 $this->setMessage('Erreur : Impossible d\'ajouter l\'article.', 'back-modal');
                 header('location: /blog/administrator/post/newpost');
-                die();
             }
-        }
-
-        //if a post have been submited, but not fully completed, throw a message
-        elseif (isset($_GET['addpost'])) {
+        } elseif (isset($_GET['addpost'])) { //if a post have been submited, but not fully completed, throw a message
             $this->setMessage('Merci de remplir tout les champs', 'back-modal');
             header('Location: /blog/administrator/post/newpost');
-            die();
-        }
-
-        //if nothing have been submited
-        else {
+        } else { //if nothing have been submited
             //call view
             echo $this->twig->render('add_post_form.twig');
             //forget about the possible messages
-            unset($_SESSION['message'], $_SESSION['message_origin']);
+            $this->unsetMessage();
         }
     }
 
@@ -185,9 +167,7 @@ class PostController extends Controller
             //if post data find on the DB
             if (!empty($postData['idPost'])) {
                 //if the edition form have been submited
-                if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']) && !empty($_POST['token']) && !empty($_SESSION['token'])) 
-                {
-
+                if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']) && !empty($_POST['token']) && !empty($_SESSION['token'])) {
                     // Token checking (prevent CRSF attack)
                     if ($_SESSION['token'] == $_POST['token']) {
                         $updated_input = new Post($_POST);
@@ -197,45 +177,25 @@ class PostController extends Controller
                         if ($edition) {
                             $this->setMessage('Article modifié.', 'back-modal');
                             header('Location: /blog/administrator/');
-                            die();
-                        }
-
-                        //failed edition, throw a message
-                        else {
+                        } else { //failed edition, throw a message
                             $this->setMessage('Erreur : Impossible de modifier l\'article.', 'back-modal');
                             header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
-                            die();
                         }
-                    }
-
-                    //token dont match, throw a message
-                    else {
+                    } else { //token dont match, throw a message
                         $this->setMessage('Erreur : Impossible de modifier l\'article.', 'back-modal');
                         header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
-                        die();
                     }
-                }
-
-                //if a post have been submited, but not fully completed, throw a message
-                elseif (isset($_GET['submit'])) {
+                } elseif (isset($_GET['submit'])) { //if a post have been submited, but not fully completed, throw a message
                     $this->setMessage('Merci de remplir tout les champs', 'back-modal');
                     header('Location: /blog/administrator/post/editpost?id='.$postData['idPost']);
-                    die();
-                }
-
-                //if nothing have been submited, display the form edition view
-                else {
+                } else { //if nothing have been submited, display the form edition view
                     echo $this->twig->render('edition_post_form.twig', array('post' => $postData));
                     //forget about the possible messages
-                    unset($_SESSION['message'], $_SESSION['message_origin']);
+                    $this->unsetMessage();
                 }
-            }
-
-            //no post id given, throw a message
-            else {
+            } else { //no post id given, throw a message
                 $this->setMessage('Article inconnu.', 'back-modal');
                 header('Location: /blog/administrator/');
-                die();
             }
         }
     }
@@ -263,15 +223,10 @@ class PostController extends Controller
             } else {
                 $this->setMessage('Article inconnu.', 'back-modal');
                 header('Location: /blog/administrator/');
-                die();
             }
-        }
-
-        //token dont match, throw a message
-        else {
+        } else { //token dont match, throw a message
             $this->setMessage('Erreur : Impossible de modifier le statut article.', 'back-modal');
             header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
-            die();
         }
     }
 
@@ -287,33 +242,21 @@ class PostController extends Controller
             //get the post id
             $postid = intval($_GET['id']);
 
+            // call manager for delete
             $postManager = new PostManager();
-            //check the post id
-            $postData = $postManager->getPost($postid);
+            $delete = $postManager->deletePost($postid);
 
-            //if post id is on the DB
-            if (!empty($postData['idPost'])) {
-                $delete = $postManager->deletePost($postid);
-
-                //successful removal
-                if ($delete) {
-                    header('Location: /blog/administrator/');
-                }
-            }
-
-            //unkown id, throw a message
-            else {
-                $this->setMessage('Article inconnu.', 'back-modal');
+            //successful removal
+            if ($delete) {
+                $this->setMessage('Artice supprimé.', 'back-modal');
                 header('Location: /blog/administrator/');
-                die();
+            } else { //failed removal (unknow id...)
+                $this->setMessage('Supression impossible.', 'back-modal');
+                header('Location: /blog/administrator/');
             }
-        }
-
-        //token dont match, throw a message
-        else {
-            $this->setMessage('Erreur : Impossible de modifier le statut article.', 'back-modal');
-            header('location: /blog/administrator/post/editpost?id='.$postData['idPost']);
-            die();
+        } else { //wrong token, throw a message
+            $this->setMessage('Supression impossible.', 'back-modal');
+            header('Location: /blog/administrator/');
         }
     }
 

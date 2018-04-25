@@ -2,8 +2,10 @@
 
 namespace Blog\Controller;
 
+use Blog\Model\CommentManager;
+
 /**
-*Abstract Class Controller instantiates the twig environement, manage message and recaptcha API
+*Abstract Class Controller instantiates the twig environement, manage session and recaptcha API
 *
 */
 abstract class Controller
@@ -15,7 +17,7 @@ abstract class Controller
     protected $twigloader;
 
     /**
-    * The twig environement for instantiates twig objects
+    * The twig environement for instantiates twig objects and token generation for session
     * @var Twig_Environment
     */
     protected $twig;
@@ -25,13 +27,26 @@ abstract class Controller
         //load the templates for Twig
         $this->twigloader = new \Twig_Loader_Filesystem(array('src/view', 'src/view/frontend', 'src/view/backend', 'src/view/frontend/form', 'src/view/backend/form'));
         //load the Twig environment
-        $this->twig = new \Twig_Environment($this->twigloader);
-        //add function "asset"
+        $this->twig = new \Twig_Environment($this->twigloader, array('debug' => true));
+
         $this->twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset) {
             return sprintf('/blog/assets/%s', ltrim($asset, '/'));
         }));
+
+        //add a function to twig for count pending comments
+        $this->pendingCommentsCounter();
+
         //add session as a global in the Twig environment
         $this->twig->addGlobal('session', $_SESSION);
+
+        //add extension for debug
+        $this->twig->addExtension(new \Twig_Extension_Debug());
+
+        //generate token for session
+        if (empty($_SESSION['token'])) {
+            $token = bin2hex(random_bytes(32));
+            $_SESSION['token'] = $token;
+        }
     }
 
 
@@ -44,6 +59,16 @@ abstract class Controller
     {
         $_SESSION['message'] = $message;
         $_SESSION['message_origin'] = $origin;
+    }
+
+    /**
+    * Unset the message displayed via the global session. To call after calling a view.
+    *
+    * @return bool
+    */
+    public function unsetMessage()
+    {
+        unset($_SESSION['message'], $_SESSION['message_origin']);
     }
 
     /**
@@ -69,5 +94,23 @@ abstract class Controller
         if ($decode['success'] == true) {
             return true;
         }
+    }
+
+    /**
+    *A counter of pending comments for backend
+    *
+    *Add a function to twig environnement for display counter on every page of the template
+    *
+    * @return float
+    */
+    public function pendingCommentsCounter()
+    {
+        $this->twig->addFunction(new \Twig_SimpleFunction('pendingCommentsCounter', function () {
+            $commentManager = new CommentManager();
+            $pendingCommentsList = $commentManager->pendingCommentsList();
+            $pendingCommentsCount = count($pendingCommentsList);
+
+            return $pendingCommentsCount;
+        }));
     }
 }

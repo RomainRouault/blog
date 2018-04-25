@@ -21,10 +21,7 @@ abstract class Entity
             //protect from xss for string values (except for post content because of TinyMCE filters)
             if (is_string($value) && ($attribut!=='postContent')) {
                 $safeValue = htmlspecialchars($value);
-            }
-
-            //if not string
-            else {
+            } else { //if not string
                 $safeValue = $value;
             }
 

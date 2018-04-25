@@ -48,11 +48,7 @@ class AuthentificationController extends Controller
             if ($pendingUser == false) {
                 $this->setMessage('Mot de passe inconnu ou/et email inconnu.', 'auth');
                 header('Location:'.$_SERVER['PHP_SELF']);
-                die();
-            }
-
-            //if mail check is ok, check the password
-            else {
+            } else { //if mail check is ok, check the password
                 $pendingPass = $_POST['userPass'];
                 if (password_verify($pendingPass, $pendingUser['personPass'])) {
                     //if pass is ok too, create session attr
@@ -61,30 +57,17 @@ class AuthentificationController extends Controller
                     //if the authentificated user is an admin, redirect
                     if ($pendingUser['personRole'] == 'admin') {
                         header('Location: ../administrator/');
-                        die();
-                    }
-
-                    //if is a standard user, stay on front
-                    else {
+                    } else { //if is a standard user, stay on front
                         header('Location:'.$_SERVER['PHP_SELF']);
-                        die();
                     }
-                }
-
-                //failed authentification
-                else {
+                } else { //failed authentification
                     $this->setMessage('Mot de passe inconnu ou/et email inconnu.', 'auth');
                     header('Location:'.$_SERVER['PHP_SELF']);
-                    die();
                 }
             }
-        }
-
-        //fields are missing
-        else {
+        } else { //fields are missing
             $this->setMessage('Tout les champs doivent être remplis', 'auth');
             header('Location:'.$_SERVER['PHP_SELF']);
-            die();
         }
         /*}
 
@@ -93,7 +76,7 @@ class AuthentificationController extends Controller
         {
             $this->setMessage('Connexion impossible, merci de compléter tout les champs', 'auth');
             header('Location:'.$_SERVER['PHP_SELF']);
-            die();
+
         }*/
     }
 
@@ -120,23 +103,14 @@ class AuthentificationController extends Controller
                     $user = $this->getUser();
                     $this->setAuthentificated($user);
                     header('Location:'.$_SERVER['PHP_SELF']);
-                    die();
-                }
-
-                //if adding failed (mail aldready registred on db (unique index on db))
-                else {
+                } else { //if adding failed (mail aldready registred on db (unique index on db))
                     $this->setMessage('Email déjà enregistré.', 'reg');
                     header('Location:'.$_SERVER['PHP_SELF']);
-                    die();
                 }
             }
-        }
-
-        //recaptcha return false
-        else {
+        } else { //recaptcha return false
             $this->setMessage('Connexion impossible, merci de compléter tout les champs', 'auth');
             header('Location:'.$_SERVER['PHP_SELF']);
-            die();
         }
     }
 
@@ -151,10 +125,6 @@ class AuthentificationController extends Controller
         $_SESSION['pseudo'] = $user['personPseudo'];
         $_SESSION['mail'] = $user['personMail'];
         $_SESSION['role'] = $user['personRole'];
-
-        //generate token for session
-        $token = bin2hex(random_bytes(32));
-        $_SESSION['token'] = $token;
     }
 
     /**
