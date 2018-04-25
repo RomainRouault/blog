@@ -1,4 +1,4 @@
-{% extends "back_layout.twig" %}
+{% extends "back_form_layout.twig" %}
 
 {% set title = 'Ajouter un article' %}
 
@@ -26,10 +26,12 @@
 
 		    <div class="form-group">
 			    <label for="post-content">Texte</label>
-			    <input type="text" class="form-control" id="postContent" name="postContent" aria-describedby="post-chapô" placeholder="Votre texte">
+			    <textarea class="form-control" id="postContent" name="postContent" aria-describedby="post-chapô" placeholder="Votre texte"></textarea>
 		  	</div>
 
 		  <button type="submit" class="btn btn-primary">Poster</button>
+			
+		  <input type="hidden" name="token" id="token" value="{{ session.token }}" />
 		</form>
 
 	</div>

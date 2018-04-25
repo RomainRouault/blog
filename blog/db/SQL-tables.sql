@@ -38,24 +38,19 @@ CREATE TABLE Comment (
                 commentContent VARCHAR(100) NOT NULL,
                 commentCreation DATETIME NOT NULL,
                 commentStatus BOOLEAN NOT NULL,
+                commentPseudo VARCHAR(100) NOT NULL,
                 idPost INT NOT NULL,
-                idPerson INT NOT NULL,
                 PRIMARY KEY (idComment)
 )
 ENGINE=INNODB;
 
-/*----------------------------------------
-------Création des clés étrangères------
+/*-------------------------------------------
+---Création des clés étrangères et index----
 -----------------------------------------*/
 
+ALTER TABLE Person ADD UNIQUE(personMail);
 
 ALTER TABLE Post ADD CONSTRAINT person_post_fk
-FOREIGN KEY (idPerson)
-REFERENCES person (idPerson)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION;
-
-ALTER TABLE Comment ADD CONSTRAINT person_comment_fk
 FOREIGN KEY (idPerson)
 REFERENCES person (idPerson)
 ON DELETE NO ACTION
@@ -64,5 +59,5 @@ ON UPDATE NO ACTION;
 ALTER TABLE Comment ADD CONSTRAINT post_comment_fk
 FOREIGN KEY (idPost)
 REFERENCES Post (idPost)
-ON DELETE NO ACTION
+ON DELETE CASCADE
 ON UPDATE NO ACTION;

@@ -1,23 +1,48 @@
 {% extends "layout.twig" %}
 
 {% block nav %}
-	{% if session.auth == 'true' %}
+	{% if session.pseudo is defined %}
 		<nav>Bonjour {{ session.pseudo }}</nav>
 	{% endif %}
 {% endblock %}
 
-
 {% block footer %}
 <div style="margin-left : 50px">	
-	{% if session.auth == 'true' %}
-		<a href="logout"><strong>Déconnexion</strong></a>
+	{% if session.pseudo is defined %}
+		<a href="/blog/authentification/logout"><strong>Déconnexion</strong></a>
 	{% else %}
 		<a data-toggle="modal" data-target="#auth" href="#"><strong>Connexion</strong></a>		
 	{% endif %}
+	{% if session.role == 'admin' %}
+		<a href="/blog/administrator/"><strong>Administration</strong></a>
+	{% endif %}
+
+
 </div>
 {% endblock %}
 
 {% block modal %}
+
+	<!-- front modal (info) -->
+	<div id="front-modal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered ">
+		    <!-- Modal content-->
+		    <div class="modal-content">
+			    <div class="modal-header">
+				    <h4 class="modal-title">Information</h4>
+			    </div>
+			    <div class="modal-body">
+	                  {% if session.message is defined %}
+	                    <strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+	                  {% endif %}
+				    <div class="modal-footer">
+					    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
+					</div>
+			    </div>
+		  	</div>
+		</div>
+	</div>
+
 
 	<!-- authentification modal -->
 	<div id="auth" class="modal fade" role="dialog">
@@ -28,7 +53,7 @@
 				    <h4 class="modal-title">Connexion</h4>
 			    </div>
 			    <div class="modal-body">
-			    	<form method="post" action="auth?auth">
+			    	<form method="post" action="/blog/authentification/isregistred">
 
 						<div class="form-group">
 							<label for="post-title">Email</label>
@@ -39,6 +64,8 @@
 						    <label for="post-chapo">Votre mot de passe</label>
 						    <input type="password" class="form-control" id="auth_mp" name="userPass" aria-describedby="votre mot de passe">
 					  	</div>
+
+					  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
 
 					  	<button type="submit" class="btn btn-primary">Se connecter</button>
 					</form>
@@ -65,7 +92,7 @@
 				    <h4 class="modal-title">Créer un compte</h4>
 			    </div>
 			    <div class="modal-body">
-			    	<form method="post" action="auth?reg">
+			    	<form method="post" action="/blog/authentification/adduser">
 
 			    		
 						<div class="form-group">
@@ -85,11 +112,11 @@
 						    <small id="reg_pseudo" class="form-text text-muted">Les espace ne sont pas acceptés.</small>
 					  	</div>
 
+					  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
+
 					  	<button type="submit" class="btn btn-primary">S'enregistrer</button>
 					</form>
-
-					<p>Pas de compte? <a href="#" data-toggle="reg" data-target="#reg">Inscrivez-vous</a></p>
-
+					
 				    <div class="modal-footer">
 				    	{% if session.message is defined and session.message_origin == 'reg' %}
 							<strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
@@ -117,6 +144,12 @@
 				})
 			</script>;
 
+		{% elseif session.message_origin == 'front-modal' %}
+			<script type='text/javascript'>
+				$(document).ready(function(){
+					$('#front-modal').modal('show');
+				})
+			</script>;
 		{% else %}
 
 			<script type='text/javascript'>
@@ -130,4 +163,6 @@
 
 	{% endif %}
 
+	{# Recaptcha : Prevent Brute Force attack and spam #}
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 {% endblock %}

@@ -1,46 +1,36 @@
 <?php
+
+namespace Blog\Model\Entity;
+
 /**
-*Abstract Entity used to hydrate child classes entities 
+*Abstract Entity used to hydrate child classes entities
 *
 */
-
-namespace Blog\Model\Entity; 
-
 abstract class Entity
 {
-	
-	public function __construct($data)
-	{
-		if (!empty($data)) 
-		{
-		  $this->hydrate($data);
-		}
-	}
+    public function __construct($data)
+    {
+        if (!empty($data)) {
+            $this->hydrate($data);
+        }
+    }
 
-	public function hydrate($data)
-	{
-		foreach ($data as $attribut => $value)
-		{
-			//protect from xss for string values
-			if (is_string($value))
-			{
-				$safeValue = htmlspecialchars($value);
-			}
+    public function hydrate($data)
+    {
+        foreach ($data as $attribut => $value) {
+            //protect from xss for string values (except for post content because of TinyMCE filters)
+            if (is_string($value) && ($attribut!=='postContent')) {
+                $safeValue = htmlspecialchars($value);
+            } else { //if not string
+                $safeValue = $value;
+            }
 
-			//if not string
-			else
-			{
-				$safeValue = $value;
-			}
+            //get the right method
+            $method = 'set'.ucfirst($attribut);
 
-			//get the right method
-			$method = 'set'.ucfirst($attribut);
-
-		  if (is_callable([$this, $method]))
-		  {
-		    $this->$method($safeValue);
-		  }
-		}
-	}
-
+            if (is_callable([$this, $method])) {
+                $this->$method($safeValue);
+            }
+        }
+    }
 }

@@ -1,16 +1,16 @@
 <?php
-/**
-*Class used to communicate with database 
-*
-*/
 
 namespace Blog\Model;
 
+/**
+*Class used to communicate with database for getting post data
+*
+*/
 class PostManager extends Manager
 {
     /**
     * Get the list of all posts
-    * @return object PDO
+    * @return array
     * @throws PDOException
     */
     public function getPostsList()
@@ -18,21 +18,21 @@ class PostManager extends Manager
         $db = $this->dbConnect();
 
         $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, postStatus, idPerson FROM post ORDER BY postCreation DESC');
-
-        return $req;
+        $postslist = $req->fetchAll();
+        return $postslist;
     }
 
     /**
     * Get a post data
     * @param int $idPost
-    * @return object PDO 
+    * @return array
     * @throws PDOException
     */
     public function getPost($idPost)
     {
         $db = $this->dbConnect();
 
-        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, postTag, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus FROM post WHERE idPost = ?');
+        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus FROM post WHERE idPost = ?');
         $req->execute(array($idPost));
         $post = $req->fetch();
 
@@ -41,7 +41,7 @@ class PostManager extends Manager
 
     /**
     * Add a new post
-    * @return object PDO 
+    * @return object PDO
     * @throws PDOException
     */
     public function addPost($post)
@@ -59,7 +59,7 @@ class PostManager extends Manager
 
     /**
     * Update a post (edition)
-    * @return object PDO 
+    * @return object PDO
     * @throws PDOException
     */
     public function updatePost($updated_input, $postid)
@@ -79,7 +79,7 @@ class PostManager extends Manager
 
     /**
     * Update the status of a post (edition)
-    * @return object PDO 
+    * @return object PDO
     * @throws PDOException
     */
     public function updatePostStatus($postid, $status)
@@ -102,9 +102,8 @@ class PostManager extends Manager
         $db = $this->dbConnect();
 
         $req = $db->prepare('DELETE FROM post WHERE idPost = ?');
-        $req->execute(array($idPost));
+        $delete = $req->execute(array($idPost));
 
-        return true;
+        return $delete;
     }
-
 }

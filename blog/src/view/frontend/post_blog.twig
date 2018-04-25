@@ -1,0 +1,57 @@
+{% extends "front_layout.twig" %}
+
+{% block content %}
+	<div style="padding : 50px">
+		<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%">
+		    <h1>{{ blogPost.postTitle }}</h1>
+		    {{ blogPost.postContent|raw }}
+		    <strong><p>{{ blogPost.creation_date_fr }}</p></strong>
+		</div>
+
+		{# Comments published on this post #}
+		<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%; margin-top : 30px; margin-bottom : 20px;">
+		    <h2>Commentaires</h2>
+		    {% if comments|length > 0 %}
+				{% for comment in comments %}
+					{# if post is published #}
+					{% if comment.commentStatus == 1 %}
+						<div style="padding : 50px">
+							<div style="border:2px solid; border-radius: 5px; padding : 10px;">
+								<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation }}</p>
+							    <p>{{ comment.commentContent }}</p>
+							    {% if session.role == 'admin' %}
+							    	<a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a>
+							    {% endif %}
+							</div>
+						</div>
+					{# if post is not published and you are an admin, display the comm with options #}
+					{% elseif comment.commentStatus == 0 and session.role == 'admin' %}
+						<div style="padding : 50px">
+							<div style="border:2px solid; border-radius: 5px; border-color : green; padding : 10px;">
+								<p><strong>Commentaire en attente :</strong><p>
+								<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation }}</p>
+							    <p>{{ comment.commentContent }}</p>
+							    <a href="/blog/administrator/comment/commenteditionstatus?id={{ comment.idComment  }}&token={{ session.token }}">Publier</a>
+                  				<a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a> 
+							</div>
+						</div>
+
+					{% endif %}
+
+				{% endfor %}
+			{% else %}
+				<p>Pas encore de commentaires publiés sur cet article.</p>
+			{% endif %}
+		</div>
+
+		{# Form for published a comment #}
+		<div id="comment-form" style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%; margin-top : 30px; margin-bottom : 20px; width : 30%;">
+			<h2>Publier un commentaire</h2>
+
+				{% include 'comment-form.twig' with {
+					    idPost : blogPost.idPost
+					}
+				only %}
+		</div>
+	</div>
+{% endblock %}

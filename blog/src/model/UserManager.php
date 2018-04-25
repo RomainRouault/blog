@@ -1,29 +1,28 @@
 <?php
-/**
-*Class used to communicate with database 
-*
-*/
 
 namespace Blog\Model;
 
+/**
+*Class used to communicate with database for getting user data
+*
+*/
 class UserManager extends Manager
 {
-
-	public function getUser($pendingUserData)
-	{
-		$db = $this->dbConnect();
+    public function getUser($pendingUserData)
+    {
+        $db = $this->dbConnect();
 
         $req = $db->prepare('SELECT idPerson, personPseudo, personMail, personPass, personRole FROM person WHERE personMail = ?');
         $req->execute(array($pendingUserData->userMail()));
         $user = $req->fetch();
 
         return $user;
-	}
+    }
 
-	public function addUser($pendingUserData)
-	{
-		$db = $this->dbConnect();
-		 $req = $db->prepare('INSERT INTO person (personPseudo, personMail, personPass, personRole) VALUES (:pseudo, :mail, :pass, :role)');
+    public function addUser($pendingUserData)
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('INSERT INTO person (personPseudo, personMail, personPass, personRole) VALUES (:pseudo, :mail, :pass, :role)');
         $req->bindValue(':pseudo', $pendingUserData->userPseudo());
         $req->bindValue(':mail', $pendingUserData->userMail());
         $req->bindValue(':pass', $pendingUserData->userPass());
@@ -31,6 +30,5 @@ class UserManager extends Manager
         $affectedLines = $req->execute();
 
         return $affectedLines;
-	}
-
+    }
 }

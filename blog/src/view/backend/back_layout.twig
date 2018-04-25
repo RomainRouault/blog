@@ -15,24 +15,31 @@
       {% block nav %}
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-          <a class="navbar-brand" href="index.html">Administration</a>
+          <a class="navbar-brand" href="/blog/administrator/">Administration</a>
           <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
               <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Liste des articles">
-                <a class="nav-link" href="postsList">
+                <a class="nav-link" href="/blog/administrator/post/backblog">
                   <i class="fa fa-fw fa-list"></i>
                   <span class="nav-link-text">Liste des articles</span>
                 </a>
               </li>
               <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Ajouter article">
-                <a class="nav-link" href="newpost">
+                <a class="nav-link" href="/blog/administrator/post/newpost">
                   <i class="fa fa-fw fa-plus"></i>
                   <span class="nav-link-text">Ajouter article</span>
                 </a>
               </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Commentaires en attente">
+                <a class="nav-link" href="/blog/administrator/comment/pendingcomments">
+                  <i class="fa fa-fw fa-clock-o"></i>
+                  <span class="nav-link-text">{% if pendingCommentsCounter() > 0 %} {{pendingCommentsCounter()}} {% else %}Aucun {% endif %}commentaires en attente</span>
+                </a>
+              </li>
+
             </ul>
             <ul class="navbar-nav sidenav-toggler">
               <li class="nav-item">
@@ -45,7 +52,7 @@
             
               <li class="nav-item">
                 <p class="nav-link" style="margin-right : 85px;">
-                  Bonjour {{ session.pseudo }}, vous avez 0 commentaire en attente.
+                  Bonjour {{ session.pseudo }}, vous avez <a href="/blog/administrator/comment/pendingcomments">{{ pendingCommentsCounter() }} commentaire(s) en attente</a>.
                 </p>
               </li>
 
@@ -55,7 +62,7 @@
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="logout">
+                <a class="nav-link" href="/blog/administrator/authentification/logout">
                   <i class="fa fa-fw fa-sign-out"></i>Se déconnecter</a>
               </li>
             </ul>
@@ -96,24 +103,29 @@
           </a>
         {% endblock %}    
         {% block modal %}
-          <!-- Logout Modal-->
-          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+          <!-- Back Message Modal-->
+          <div class="modal" id="back-modal" tabindex="-1" role="dialog" aria-labelledby="back-modal" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Information</h5>
                   <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                   </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body">              
+                  {% if session.message is defined %}
+                    <strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+                  {% endif %}
+                </div>
                 <div class="modal-footer">
-                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                  <a class="btn btn-primary" href="login.html">Logout</a>
+                  <button class="btn btn-secondary" type="button" data-dismiss="modal">Fermer</button>
                 </div>
               </div>
             </div>
           </div>
+
         {% endblock %}
       </div>
 
@@ -121,6 +133,16 @@
         {{ parent() }}
         {# js from sb-admin's bootstrap theme #}
         <script src="{{ asset('js/sb-admin.min.js') }}"></script>
+
+        {# Script for automaticaly display the modal if there is error message to display #}
+        {% if session.message is defined %}
+          <script type='text/javascript'>
+            $(document).ready(function(){
+              $('#back-modal').modal('show');
+            })
+          </script>;
+        {% endif %}
+
       {% endblock %}
 
     </body>
