@@ -91,7 +91,7 @@ abstract class Controller
         // decode the json file returned
         $decode = json_decode(file_get_contents($api_url), true);
 
-        if ($decode['success'] == true) {
+        if ($decode['success'] === true) {
             return true;
         }
     }
