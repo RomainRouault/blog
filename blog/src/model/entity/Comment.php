@@ -10,7 +10,6 @@ class Comment extends Entity
 {
     protected $idComment;
     protected $commentContent;
-    protected $commentCreation;
     protected $commentStatus;
     protected $commentPseudo;
 
@@ -24,11 +23,6 @@ class Comment extends Entity
     public function commentContent()
     {
         return $this->commentContent;
-    }
-
-    public function commentCreation()
-    {
-        return $this->commentCreation;
     }
 
     public function commentStatus()
@@ -49,11 +43,6 @@ class Comment extends Entity
         if (is_string($commentContent)) {
             $this->commentContent = $commentContent;
         }
-    }
-
-    public function setCommentCreation(\DateTime $commentCreation)
-    {
-        $this->setcommentCreation = $setcommentCreation;
     }
 
     public function setCommentStatus($commentStatus)
