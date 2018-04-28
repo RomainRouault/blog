@@ -17,7 +17,7 @@ class PostManager extends Manager
     {
         $db = $this->dbConnect();
 
-        $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, postStatus, idPerson FROM post ORDER BY postCreation DESC');
+        $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus, idPerson FROM post ORDER BY postCreation DESC');
         $postslist = $req->fetchAll();
         return $postslist;
     }
@@ -32,7 +32,7 @@ class PostManager extends Manager
     {
         $db = $this->dbConnect();
 
-        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus FROM post WHERE idPost = ?');
+        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus, post.idPerson, personPseudo, personRole FROM post JOIN person ON post.idPerson = person.idPerson WHERE idPost = ?');
         $req->execute(array($idPost));
         $post = $req->fetch();
 
@@ -62,16 +62,17 @@ class PostManager extends Manager
     * @return object PDO
     * @throws PDOException
     */
-    public function updatePost($updated_input, $postid)
+    public function updatePost($updated_input, $postid, $idPerson)
     {
         $db = $this->dbConnect();
 
-        $req = $db->prepare('UPDATE post SET postTitle= :title, postChapo= :chapo, postContent=  :content, postUpdate= NOW(), postStatus= :status WHERE idPost = :id');
+        $req = $db->prepare('UPDATE post SET postTitle= :title, postChapo= :chapo, postContent=  :content, postUpdate= NOW(), postStatus= :status, idPerson= :idPostPerson WHERE idPost = :id');
         $req->bindValue(':id', $postid);
         $req->bindValue(':title', $updated_input->postTitle());
         $req->bindValue(':chapo', $updated_input->postChapo());
         $req->bindValue(':content', $updated_input->postContent());
         $req->bindValue(':status', $updated_input->postStatus());
+        $req->bindValue(':idPostPerson', $idPerson);
         $affectedLines = $req->execute();
 
         return $affectedLines;

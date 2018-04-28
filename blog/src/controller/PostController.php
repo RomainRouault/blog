@@ -3,10 +3,11 @@
 namespace Blog\Controller;
 
 use Blog\Model\PostManager;
+use Blog\Model\CommentManager;
+use Blog\Model\UserManager;
 use Blog\Model\Entity\Post;
 use Blog\Controller\AuthentificationController;
 use Blog\Controller\CommentController;
-use Blog\Model\CommentManager;
 
 /**
 *Class PostController provides methods for all related post features
@@ -162,11 +163,12 @@ class PostController extends Controller
             //if post data find on the DB
             if (!empty($postData['idPost'])) {
                 //if the edition form have been submited
-                if (!empty($_POST['postTitle']) && !empty($_POST['postChapo']) && !empty($_POST['postContent']) && !empty($_POST['token']) && !empty($_SESSION['token'])) {
+                if (!empty($_POST['postTitle']) && !empty($_POST['idPerson'] /* author */ ) && !empty($_POST['postChapo']) && !empty($_POST['postContent']) && !empty($_POST['token']) && !empty($_SESSION['token'])) {
                     // Token checking (prevent CRSF attack)
                     if ($_SESSION['token'] == $_POST['token']) {
                         $updated_input = new Post($_POST);
-                        $edition = $postManager->updatePost($updated_input, $postid);
+                        $edition = $postManager->updatePost($updated_input, $postid, $_POST['idPerson']);
+                        var_dump($updated_input);
 
                         //successful edition, throw a message to confirm
                         if ($edition) {
@@ -183,8 +185,12 @@ class PostController extends Controller
                 } elseif (isset($_GET['submit'])) { //if a post have been submited, but not fully completed, throw a message
                     $this->setMessage('Merci de remplir tout les champs', 'back-modal');
                     header('Location: /blog/administrator/post/editpost?id='.$postData['idPost']);
-                } else { //if nothing have been submited, display the form edition view
-                    echo $this->twig->render('edition_post_form.twig', array('post' => $postData));
+                } else { //if nothing have been submited, get the form edition view
+                    //get the users list for display them into a select 
+                    $userManager = New userManager();
+                    $userslist = $userManager->getUsersList();
+                    //call the view
+                    echo $this->twig->render('edition_post_form.twig', array('post' => $postData, 'users' => $userslist));
                     //forget about the possible messages
                     $this->unsetMessage();
                 }

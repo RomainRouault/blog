@@ -24,7 +24,7 @@ class AuthentificationController extends Controller
         $pendingUserData = new User($_POST);
         $userManager = new UserManager();
 
-        return $userManager->getUser($pendingUserData);
+        return $userManager->getUserByMail($pendingUserData);
     }
 
 
@@ -39,44 +39,40 @@ class AuthentificationController extends Controller
         //first, check the user with recaptcha API (return true if success)
         /*if ($this->recaptcha())
         {*/
-        //check if the form had been fully completed
-        if (!empty($_POST['userMail']) && !empty($_POST['userPass'])) {
-            //check if Post data (mail) match with a db entry
-            $pendingUser = $this->getUser();
+            //check if the form had been fully completed
+            if (!empty($_POST['userMail']) && !empty($_POST['userPass'])) {
+                //check if Post data (mail) match with a db entry
+                $pendingUser = $this->getUser();
 
-            //if not match
-            if ($pendingUser === false) {
-                $this->setMessage('Mot de passe inconnu ou/et email inconnu.', 'auth');
-                header('Location:'.$_SERVER['PHP_SELF']);
-            } else { //if mail check is ok, check the password
-                $pendingPass = $_POST['userPass'];
-                if (password_verify($pendingPass, $pendingUser['personPass'])) {
-                    //if pass is ok too, create session attr
-                    $this->setAuthentificated($pendingUser);
-
-                    //if the authentificated user is an admin, redirect
-                    if ($pendingUser['personRole'] == 'admin') {
-                        header('Location: ../administrator/');
-                    } else { //if is a standard user, stay on front
-                        header('Location:'.$_SERVER['PHP_SELF']);
-                    }
-                } else { //failed authentification
+                //if not match
+                if ($pendingUser === false) {
                     $this->setMessage('Mot de passe inconnu ou/et email inconnu.', 'auth');
                     header('Location:'.$_SERVER['PHP_SELF']);
-                }
-            }
-        } else { //fields are missing
-            $this->setMessage('Tout les champs doivent être remplis', 'auth');
-            header('Location:'.$_SERVER['PHP_SELF']);
-        }
-        /*}
+                } else { //if mail check is ok, check the password
+                    $pendingPass = $_POST['userPass'];
+                    if (password_verify($pendingPass, $pendingUser['personPass'])) {
+                        //if pass is ok too, create session attr
+                        $this->setAuthentificated($pendingUser);
 
-        //recaptcha return false
-        else
-        {
+                        //if the authentificated user is an admin, redirect
+                        if ($pendingUser['personRole'] == 'admin') {
+                            header('Location: ../administrator/');
+                        } else { //if is a standard user, stay on front
+                            header('Location:'.$_SERVER['PHP_SELF']);
+                        }
+                    } 
+                    else { //failed authentification
+                        $this->setMessage('Mot de passe inconnu ou/et email inconnu.', 'auth');
+                        header('Location:'.$_SERVER['PHP_SELF']);
+                    }
+                }
+            } else { //fields are missing
+                $this->setMessage('Tout les champs doivent être remplis', 'auth');
+                header('Location:'.$_SERVER['PHP_SELF']);
+            }
+        /*} else { //recaptcha return false
             $this->setMessage('Connexion impossible, merci de compléter tout les champs', 'auth');
             header('Location:'.$_SERVER['PHP_SELF']);
-
         }*/
     }
 
