@@ -22,7 +22,7 @@ Learn more about [composer](https://getcomposer.org/doc/01-basic-usage.md) here.
 ## Build with :
 
 * PHP 7.1
-* [Twig] (https://github.com/twigphp/Twig)
+* [Twig](https://github.com/twigphp/Twig)
 * MySQL
 * [PhpMailer](https://github.com/PHPMailer/PHPMailer)
 * [Bootstrap 4](https://github.com/twbs/bootstrap/tree/v4-dev)
