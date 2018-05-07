@@ -17,7 +17,7 @@ class PostManager extends Manager
     {
         $db = $this->dbConnect();
 
-        $req = $db->query('SELECT idPost, postTitle, postChapo, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus, idPerson FROM post ORDER BY postCreation DESC');
+        $req = $db->query('SELECT idPost, postTitle, postChapo, postUpdate, postStatus, post.idPerson, personPseudo, personRole FROM post JOIN person ON post.idPerson = person.idPerson ORDER BY postCreation DESC');
         $postslist = $req->fetchAll();
         return $postslist;
     }
@@ -32,7 +32,7 @@ class PostManager extends Manager
     {
         $db = $this->dbConnect();
 
-        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, DATE_FORMAT(postCreation, \'%d/%m/%Y à %Hh%imin%ss\') AS creation_date_fr, DATE_FORMAT(postUpdate, \'%d/%m/%Y à %Hh%imin%ss\') AS update_date_fr, postStatus, post.idPerson, personPseudo, personRole FROM post JOIN person ON post.idPerson = person.idPerson WHERE idPost = ?');
+        $req = $db->prepare('SELECT idPost, postTitle, postChapo, postContent, postCreation, postUpdate, postStatus, post.idPerson, personPseudo, personRole FROM post JOIN person ON post.idPerson = person.idPerson WHERE idPost = ?');
         $req->execute(array($idPost));
         $post = $req->fetch();
 

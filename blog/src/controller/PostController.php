@@ -163,12 +163,11 @@ class PostController extends Controller
             //if post data find on the DB
             if (!empty($postData['idPost'])) {
                 //if the edition form have been submited
-                if (!empty($_POST['postTitle']) && !empty($_POST['idPerson'] /* author */ ) && !empty($_POST['postChapo']) && !empty($_POST['postContent']) && !empty($_POST['token']) && !empty($_SESSION['token'])) {
+                if (!empty($_POST['postTitle']) && !empty($_POST['idPerson'] /* author */) && !empty($_POST['postChapo']) && !empty($_POST['postContent']) && !empty($_POST['token']) && !empty($_SESSION['token'])) {
                     // Token checking (prevent CRSF attack)
                     if ($_SESSION['token'] == $_POST['token']) {
                         $updated_input = new Post($_POST);
                         $edition = $postManager->updatePost($updated_input, $postid, $_POST['idPerson']);
-                        var_dump($updated_input);
 
                         //successful edition, throw a message to confirm
                         if ($edition) {
@@ -186,8 +185,8 @@ class PostController extends Controller
                     $this->setMessage('Merci de remplir tout les champs', 'back-modal');
                     header('Location: /blog/administrator/post/editpost?id='.$postData['idPost']);
                 } else { //if nothing have been submited, get the form edition view
-                    //get the users list for display them into a select 
-                    $userManager = New userManager();
+                    //get the users list for display them into a select
+                    $userManager = new userManager();
                     $userslist = $userManager->getUsersList();
                     //call the view
                     echo $this->twig->render('edition_post_form.twig', array('post' => $postData, 'users' => $userslist));
@@ -281,5 +280,29 @@ class PostController extends Controller
 
         //return the data
         return array('totalPage' => $totalPage, 'limit' => $limit, 'offset' => $offset, 'currentPage' => $currentPage);
+    }
+
+    /*****************************************************************/
+    /*********** functions to display static pages (front) ***********/
+    /*****************************************************************/
+
+    /**
+    *display the homepage
+    *
+    */
+    public function home()
+    {
+        echo $this->twig->display('home.twig');
+        $this->unsetMessage();
+    }
+
+    /**
+    *display the portfolio page
+    *
+    */
+    public function portfolio()
+    {
+        echo $this->twig->display('portfolio.twig');
+        $this->unsetMessage();
     }
 }

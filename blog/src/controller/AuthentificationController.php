@@ -37,8 +37,7 @@ class AuthentificationController extends Controller
     public function isRegistred()
     {
         //first, check the user with recaptcha API (return true if success)
-        /*if ($this->recaptcha())
-        {*/
+        if ($this->recaptcha()) {
             //check if the form had been fully completed
             if (!empty($_POST['userMail']) && !empty($_POST['userPass'])) {
                 //check if Post data (mail) match with a db entry
@@ -60,8 +59,7 @@ class AuthentificationController extends Controller
                         } else { //if is a standard user, stay on front
                             header('Location:'.$_SERVER['PHP_SELF']);
                         }
-                    } 
-                    else { //failed authentification
+                    } else { //failed authentification
                         $this->setMessage('Mot de passe inconnu ou/et email inconnu.', 'auth');
                         header('Location:'.$_SERVER['PHP_SELF']);
                     }
@@ -70,10 +68,10 @@ class AuthentificationController extends Controller
                 $this->setMessage('Tout les champs doivent être remplis', 'auth');
                 header('Location:'.$_SERVER['PHP_SELF']);
             }
-        /*} else { //recaptcha return false
+        } else { //recaptcha return false
             $this->setMessage('Connexion impossible, merci de compléter tout les champs', 'auth');
             header('Location:'.$_SERVER['PHP_SELF']);
-        }*/
+        }
     }
 
     /**

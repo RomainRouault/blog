@@ -1,7 +1,3 @@
-{% extends "front_layout.twig" %}
-
-{% block content %}
-
   <form method="post" action="/blog/contact/contactform">
     <div class="form-group">
       <label for="contactName">Nom</label>
@@ -19,7 +15,7 @@
 
       <div class="form-group">
         <label for="contactMessage">Objet</label>
-        <input class="form-control" id="contactSubject" name="contactSubject" aria-describedby="contactSubject"></textarea>
+        <input class="form-control" id="contactSubject" name="contactSubject" aria-describedby="contactSubject">
       </div>
 
       <div class="form-group">
@@ -27,11 +23,9 @@
   	    <textarea class="form-control" id="contactMessage" name="contactMessage" aria-describedby="contactMessage"></textarea>
     	</div>
 
-  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
+  	<div class="g-recaptcha mt-5" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
 
-    <button type="submit" class="btn btn-primary">Poster</button>
+    <button type="submit" class="btn btn-primary mt-5 btn-xl">Poster</button>
   	
     <input type="hidden" name="token" id="token" value="{{ session.token }}" />
   </form>
-
-{% endblock %}

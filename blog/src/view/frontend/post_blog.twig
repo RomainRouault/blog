@@ -1,58 +1,108 @@
 {% extends "front_layout.twig" %}
 
-{% block content %}
-	<div style="padding : 50px">
-		<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%">
-		    <h1>{{ blogPost.postTitle }}</h1>
-		    <p>{{ blogPost.personPseudo }}</p>
-		    {{ blogPost.postContent|raw }}
-		    <strong><p>Dernière modification : {{ blogPost.update_date_fr }}</p></strong>
-		</div>
+{% block title %}{{ blogPost.postTitle }}{% endblock %}
 
-		{# Comments published on this post #}
-		<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%; margin-top : 30px; margin-bottom : 20px;">
-		    <h2>Commentaires</h2>
-		    {% if comments|length > 0 %}
-				{% for comment in comments %}
-					{# if post is published #}
-					{% if comment.commentStatus == 1 %}
-						<div style="padding : 50px">
-							<div style="border:2px solid; border-radius: 5px; padding : 10px;">
-								<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation }}</p>
-							    <p>{{ comment.commentContent }}</p>
-							    {% if session.role == 'admin' %}
-							    	<a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a>
-							    {% endif %}
-							</div>
+{% block body %}
+	<body id="blog">
+
+		{% block content %}
+			{% block nav %}
+				{{ parent() }}
+			{% endblock %}
+			
+			<!-- Header -->
+			<header class="masthead d-flex" id="page-top">
+			  <div class="container text-center my-auto">
+			    <h1 class="mb-1">{{ blogPost.postTitle }}</h1>
+			   </div>
+			</header>
+
+			<!-- content -->
+			<div class="bg-light pt-1">
+				<div class="container">
+						{# if post is published #}
+						{% if blogPost.postStatus == 1  %}
+							<article class="blogpost m-5 pr-4 pl-4 pb-4">
+									<header>
+									    <h1 class="mb-0"><a href="/blog/post/blogpost?id={{ blogPost.idPost }}">{{ blogPost.postTitle }}</a></h2>
+									    <div class="post-info">
+									    	<div class="mr-3 d-inline"><i class="fa fa-pencil pr-1"></i>{{ blogPost.personPseudo }}</div>
+									    	<div class="d-inline"><i class="fa fa-calendar pr-1"></i>{{ blogPost.postUpdate|date("d/m/Y") }} (Dernière modification)</div>
+										</div>
+									</header>
+									<div class="p-2">
+									    <p class="pt-4 pb-3">{{ blogPost.postContent|raw }}</p>
+									</div>
+							</article>
+						{% else %}
+							<p>Article non consultable</p>
+						{% endif %}
+						
+					<aside class="comment-section ml-5 mr-5 pb-5">
+						{# Comments published on this post #}
+						<div>
+						    <h2>Commentaires</h2>
+						    {% if comments|length > 0 %}
+								{% for comment in comments %}
+									{# if post is published #}
+									{% if comment.commentStatus == 1 %}
+										<div>
+											<div class="comment mb-5">
+												<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation|date("d/m/Y") }}</p>
+											    <p>{{ comment.commentContent }}</p>
+											    {% if session.role == 'admin' %}
+											    	<a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a>
+											    {% endif %}
+											</div>
+										</div>
+									{# if post is not published and you are an admin, display the comm with options #}
+									{% elseif comment.commentStatus == 0 and session.role == 'admin' %}
+										<div>
+											<div>
+												<p><strong>Commentaire en attente :</strong><p>
+												<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation|date("d/m/Y") }}</p>
+											    <p>{{ comment.commentContent }}</p>
+											    <a href="/blog/administrator/comment/commenteditionstatus?id={{ comment.idComment  }}&token={{ session.token }}">Publier</a>
+				                  				<a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a> 
+											</div>
+										</div>
+
+									{% endif %}
+
+								{% endfor %}
+							{% else %}
+								<p>Pas encore de commentaires publiés sur cet article.</p>
+							{% endif %}
 						</div>
-					{# if post is not published and you are an admin, display the comm with options #}
-					{% elseif comment.commentStatus == 0 and session.role == 'admin' %}
-						<div style="padding : 50px">
-							<div style="border:2px solid; border-radius: 5px; border-color : green; padding : 10px;">
-								<p><strong>Commentaire en attente :</strong><p>
-								<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation }}</p>
-							    <p>{{ comment.commentContent }}</p>
-							    <a href="/blog/administrator/comment/commenteditionstatus?id={{ comment.idComment  }}&token={{ session.token }}">Publier</a>
-                  				<a href="/blog/administrator/comment/deletecomment?id={{ comment.idComment  }}&token={{ session.token }}">Supprimer</a> 
-							</div>
+
+						{# Form for published a comment #}
+						<div id="comment-form">
+							<h2>Publier un commentaire</h2>
+
+								{% include 'comment_form.twig' with {
+									    idPost : blogPost.idPost
+									}
+								only %}
 						</div>
+					</aside>
+				</div>
+			</div>
 
-					{% endif %}
+		{% endblock %}
 
-				{% endfor %}
-			{% else %}
-				<p>Pas encore de commentaires publiés sur cet article.</p>
-			{% endif %}
-		</div>
+		{% block footer %}
+		{{parent()}}
+        {% endblock %}  
 
-		{# Form for published a comment #}
-		<div id="comment-form" style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%; margin-top : 30px; margin-bottom : 20px; width : 30%;">
-			<h2>Publier un commentaire</h2>
+      {% block modal %}
+		{{parent()}}
+      {% endblock %}
 
-				{% include 'comment_form.twig' with {
-					    idPost : blogPost.idPost
-					}
-				only %}
-		</div>
-	</div>
+
+	  {% block javascripts %}
+		{{parent()}}
+	  {% endblock %}
+
+	</body>
+
 {% endblock %}

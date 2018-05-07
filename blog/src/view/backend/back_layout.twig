@@ -1,6 +1,8 @@
 {% extends "layout.twig" %}
 
 {% block head %}
+  {{parent()}}
+  {% block title %}{% endblock %}
 	{% block stylesheets %}
 	{{ parent() }}
 	{# style from sb-admin's bootstrap theme #}
@@ -116,7 +118,7 @@
                 </div>
                 <div class="modal-body">              
                   {% if session.message is defined %}
-                    <strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+                    <strong><p style="margin: auto;">{{ session.message }}</p></strong>
                   {% endif %}
                 </div>
                 <div class="modal-footer">
