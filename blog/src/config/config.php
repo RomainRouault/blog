@@ -13,5 +13,5 @@ abstract class Config
           DB_USERNAME  = '',
           DB_PASSWORD  = '',
           EMAIL_USERNAME = '',
-		  EMAIL_PASSWORD = '';
+          EMAIL_PASSWORD = '';
 }
