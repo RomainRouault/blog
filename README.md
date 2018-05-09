@@ -30,4 +30,4 @@ Learn more about [composer](https://getcomposer.org/doc/01-basic-usage.md) here.
 
 ## Notation :
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/57b84dde-fa21-4500-abf9-29fa4b073aa9/small.png)](https://insight.sensiolabs.com/projects/57b84dde-fa21-4500-abf9-29fa4b073aa9)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/04d079ce-e753-4327-9853-2edc61168dfa/big.png)](https://insight.sensiolabs.com/projects/04d079ce-e753-4327-9853-2edc61168dfa)
