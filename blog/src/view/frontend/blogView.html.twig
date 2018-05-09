@@ -1,0 +1,19 @@
+{% extends "layout.twig" %}
+
+{% block title %}Blog{% endblock %}
+
+{% block content %}	
+
+	{% for blogPost in blogPosts %}
+		<div style="padding : 50px">
+			<h1 style="margin-bottom : 20px;">Blog</h1>
+			<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%">
+			    <h2>{{ blogPost.postTitle }}</h2>
+			    <p>{{ blogPost.postChapo }}</p>
+			    <strong><p>{{ blogPost.creation_date_fr }}</p></strong>
+			</div>
+		</div>
+	{% endfor %}
+
+<div style="margin-left : 50px"><a href="administrator/"><strong>Accès administration</strong></a></div>
+{% endblock %}
