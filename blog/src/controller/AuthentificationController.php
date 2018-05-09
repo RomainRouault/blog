@@ -95,6 +95,7 @@ class AuthentificationController extends Controller
                 // if the user is added
                 if ($addUserOk) {
                     $user = $this->getUser();
+                    $this->setMessage('Merci, vous êtes maintenant inscrit.', 'front-modal');
                     $this->setAuthentificated($user);
                     header('Location:'.$_SERVER['PHP_SELF']);
                 } else { //if adding failed (mail aldready registred on db (unique index on db))

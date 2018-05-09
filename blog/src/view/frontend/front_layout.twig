@@ -117,7 +117,7 @@
 				    </div>
 				    <div class="modal-body">
 		                  {% if session.message is defined %}
-		                    <strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+		                    <strong><p style="margin: auto;">{{ session.message }}</p></strong>
 		                  {% endif %}
 					    <div class="modal-footer">
 						    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
@@ -158,7 +158,7 @@
 
 					    <div class="modal-footer">
 					    	{% if session.message is defined and session.message_origin == 'auth' %}
-								<strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+								<strong><p style="margin: auto;">{{ session.message }}</p></strong>
 							{% endif %}
 						    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
 						</div>
@@ -203,7 +203,7 @@
 						
 					    <div class="modal-footer">
 					    	{% if session.message is defined and session.message_origin == 'reg' %}
-								<strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
+								<strong><p style="margin: auto;">{{ session.message }}</p></strong>
 							{% endif %}
 						    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
 						</div>
@@ -222,8 +222,8 @@
 	            <h4 class="modal-title">CV</h4>
 	          </div>
 	          <div class="modal-body">
-	                        <embed src="{{asset('pdf/CV_ROUAULT_ROMAIN.pdf')}}"
-	                               frameborder="0" width="100%" height="400px">
+	                <embed src="{{asset('pdf/CV_ROUAULT_ROMAIN.pdf')}}" frameborder="0" width="100%" height="400px">
+	                <a href="{{asset('pdf/CV_ROUAULT_ROMAIN.pdf')}}" download="CV_ROUAULT_ROMAIN"><button type="button" class="btn btn-default back-blue">Télécharger</button></a>
 	            <div class="modal-footer">
 	              <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
 	          </div>
@@ -251,22 +251,22 @@
 				<script type='text/javascript'>
 					$(document).ready(function(){
 						$('#auth').modal('show');
-					})
-				</script>;
+					});
+				</script>
 
 			{% elseif session.message_origin == 'front-modal' %}
 				<script type='text/javascript'>
 					$(document).ready(function(){
 						$('#front-modal').modal('show');
-					})
-				</script>;
+					});
+				</script>
 			{% else %}
 
 				<script type='text/javascript'>
 					$(document).ready(function(){
 						$('#reg').modal('show');
-					})
-				</script>;
+					});
+				</script>
 				
 			{% endif %}
 

@@ -2,11 +2,11 @@
 
 {% block head %}
   {{parent()}}
-  {% block title %}{% endblock %}
+  {% block title %}Administration - {% endblock %}
 	{% block stylesheets %}
-	{{ parent() }}
-	{# style from sb-admin's bootstrap theme #}
-  <link href="{{ asset('css/back/sb-admin.min.css') }}" rel="stylesheet" />
+  	{{ parent() }}
+  	{# style from sb-admin's bootstrap theme #}
+    <link href="{{ asset('css/back/sb-admin.min.css') }}" rel="stylesheet" />
 	{% endblock %}
 {% endblock %}
 
@@ -132,6 +132,7 @@
       </div>
 
       {% block javascripts %}
+
         {{ parent() }}
         {# js from sb-admin's bootstrap theme #}
         <script src="{{ asset('js/sb-admin.min.js') }}"></script>
@@ -141,7 +142,7 @@
           <script type='text/javascript'>
             $(document).ready(function(){
               $('#back-modal').modal('show');
-            })
+            });
           </script>;
         {% endif %}
 

@@ -58,8 +58,8 @@
 									{# if post is not published and you are an admin, display the comm with options #}
 									{% elseif comment.commentStatus == 0 and session.role == 'admin' %}
 										<div>
-											<div>
-												<p><strong>Commentaire en attente :</strong><p>
+											<div class="comment mb-5">
+												<h3>Commentaire en attente :</h3>
 												<p>{{ comment.commentPseudo }} - Publié le {{ comment.commentCreation|date("d/m/Y") }}</p>
 											    <p>{{ comment.commentContent }}</p>
 											    <a href="/blog/administrator/comment/commenteditionstatus?id={{ comment.idComment  }}&token={{ session.token }}">Publier</a>

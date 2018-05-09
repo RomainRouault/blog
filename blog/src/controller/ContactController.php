@@ -7,6 +7,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 use Blog\Config\Config;
+use Blog\Controller\ContactFormController;
 
 /**
 *Class ContactController managed the contact feature
@@ -27,6 +28,7 @@ class ContactController extends Controller
             //first, check the user with recaptcha API (return true if success)
             if ($this->recaptcha()) {
                 if ($_SESSION['token'] == $_POST['token']) {
+
                     //Create a new PHPMailer instance
                     $mail = new PHPMailer();
                     //Tell PHPMailer to use SMTP - requires a local mail server
@@ -47,23 +49,25 @@ class ContactController extends Controller
                     $mail->Username = Config::EMAIL_USERNAME;
                     $mail->Password = Config::EMAIL_PASSWORD;
 
+                    //filter data post
+                    $dataForm = $this->contactFormCheck($_POST);
                     //Set mail adress
-                    $mail->setFrom('contact@romain-rouault.fr', $_POST['contactName']).' ('.$_POST['contactMail'].')';
+                    $mail->setFrom('contact@romain-rouault.fr', $dataForm['contactName']).' ('.$dataForm['contactMail'].')';
                     //Send the message to yourself, or whoever should receive contact for submissions
                     $mail->addAddress('contact@romain-rouault.fr', 'Romain Rouault');
 
                     //Put the submitter's address in a reply-to header
                     //This will fail if the address provided is invalid,
                     //in which case we should ignore the whole request
-                    if ($mail->addReplyTo($_POST['contactMail'], $_POST['contactName'])) {
+                    if ($mail->addReplyTo($dataForm['contactMail'], $dataForm['contactName'])) {
                         $mail->Subject = 'Formulaire de contact - Romain Rouault';
                         //use HTML
                         $mail->isHTML(true);
                         //Subject of mail
-                        $mail->Subject = $_POST['contactSubject'];
+                        $mail->Subject = $dataForm['contactSubject'];
                         //Build a simple message body
-                        $mail->Body = 'Un nouveau message de <strong>'.$_POST['contactName'].'</strong> ('.$_POST['contactMail'].') :<br/>' .$_POST['contactMessage'];
-                        $mail->AltBody = $_POST['contactMessage'];
+                        $mail->Body = 'Un nouveau message de <strong>'.$dataForm['contactName'].'</strong> ('.$dataForm['contactMail'].') :<br/>' .$dataForm['contactMessage'];
+                        $mail->AltBody = $dataForm['contactMessage'];
                         //Send the message, check for errors
                         if (!$mail->send()) {
                             //The reason for failing to send will be in $mail->ErrorInfo
@@ -91,4 +95,25 @@ class ContactController extends Controller
             $this->unsetMessage();
         }
     }
+
+    /**
+    * Function for checking the post form data
+    *
+    * @return array
+    */
+    public function contactFormCheck($post_data)
+    {
+        //create array of arguments for filter the data
+        $arg = array(
+            'contactMail' => FILTER_VALIDATE_EMAIL,
+            'contactName' => FILTER_SANITIZE_STRING,
+            'contactSubject' => FILTER_SANITIZE_STRING,
+            'contactMessage' => FILTER_SANITIZE_STRING
+            );
+
+        //filter the data given
+        $safedata = filter_var_array($post_data, $arg);
+        return $safedata;
+    }       
+
 }
