@@ -2,68 +2,30 @@
 
 {% block title %}Blog{% endblock %}
 
-{% block body %}
-	<body id="portfolio">
-
-		{% block content %}
-			{% block nav %}
-				{{ parent() }}
-			{% endblock %}
-			
-			<!-- Header -->
-			<header class="masthead d-flex" id="page-top">
-			  <div class="container text-center my-auto">
-			    <h1 class="mb-1">Blog</h1>
-			   </div>
-			</header>
-
-			<!-- content -->
-			<div class="bg-light pt-1">
-				<div class="container">
-					{% for blogPost in blogPosts %}
-						{# if post is published #}
-						{% if blogPost.postStatus == 1  %}
-							<article class="blogpost m-5 pr-4 pl-4 pb-4">
-									<header>
-									    <h2 class="mb-0"><a href="/blog/post/blogpost?id={{ blogPost.idPost }}">{{ blogPost.postTitle }}</a></h2>
-									    <div class="post-info">
-									    	<div class="mr-3 d-inline"><i class="fa fa-pencil pr-1"></i>{{ blogPost.personPseudo }}</div>
-									    	<div class="d-inline"><i class="fa fa-calendar pr-1"></i>{{ blogPost.postUpdate|date("d/m/Y") }} (Dernière modification)</div>
-										</div>
-									</header>
-									<div class="p-2">
-									    <p class="pt-4 pb-3">{{ blogPost.postChapo }}</p>
-									    <a class="btn btn-primary" href="/blog/post/blogpost?id={{ blogPost.idPost }}">Lire l'article</a>
-									</div>
-							</article>
-						{% endif %}
-					{% endfor %}
-
-					{% include 'pagination.twig' with {
-						    currentPage: pagination.currentPage,
-						    paginationPath: "/blog/post/blog?p=",
-						    lastPage: pagination.totalPage,
-						    showAlwaysFirstAndLast: false
-						}
-					only %}
+{% block content %}	
+	{% block nav %}
+	    {{ parent() }}
+	{% endblock %}
+	<h1 style="margin-bottom : 20px;">Blog</h1>
+	{% for blogPost in blogPosts %}
+		{# if post is published #}
+		{% if blogPost.postStatus == 1  %}
+			<div style="padding : 50px">
+				<div style="border:2px solid; border-radius: 5px; padding : 10px; width : 30%">
+				    <h2><a href="/blog/post/blogpost?id={{ blogPost.idPost }}">{{ blogPost.postTitle }}</a></h2>
+				    <p>{{ blogPost.postChapo }}</p>
+				    <strong><p>{{ blogPost.creation_date_fr }}</p></strong>
 				</div>
 			</div>
+		{% endif %}
+	{% endfor %}
 
-		{% endblock %}
-
-		{% block footer %}
-		{{parent()}}
-        {% endblock %}  
-
-      {% block modal %}
-		{{parent()}}
-      {% endblock %}
-
-
-	  {% block javascripts %}
-		{{parent()}}
-	  {% endblock %}
-
-	</body>
+	{% include 'pagination.twig' with {
+		    currentPage: pagination.currentPage,
+		    paginationPath: "/blog?p=",
+		    lastPage: pagination.totalPage,
+		    showAlwaysFirstAndLast: false
+		}
+	only %}
 
 {% endblock %}

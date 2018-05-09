@@ -1,16 +1,17 @@
 <?php
-/**
-*Class Config with constants to sets database
-*
-*/
 
 namespace Blog\Config;
 
-Abstract Class Config
+/**
+*Class for app configuration
+*
+*/
+abstract class Config
 {
-    const DB_HOST    = 'localhost',
-    	  DB_NAME      = 'blog',
-          DB_USERNAME  = 'root',
-          DB_PASSWORD  = '';
+    const DB_HOST    = '',
+          DB_NAME      = '',
+          DB_USERNAME  = '',
+          DB_PASSWORD  = '',
+          EMAIL_USERNAME = '',
+          EMAIL_PASSWORD = '';
 }
-

@@ -1,12 +1,12 @@
 ﻿/*--------------------------------------
-------Création de la base donnée------
+-----------Create Database--------------
 --------------------------------------*/
 
 CREATE DATABASE IF NOT EXISTS blog CHARACTER SET 'utf8';
 USE blog;
 
 /*-----------------------------------------------------
-------Création des tables et de leurs attributs------
+---------Creating tables and their attributes---------
 -----------------------------------------------------*/
 
 CREATE TABLE Person (
@@ -45,7 +45,7 @@ CREATE TABLE Comment (
 ENGINE=INNODB;
 
 /*-------------------------------------------
----Création des clés étrangères et index----
+-----Creating Foreign Keys and Indexes-----
 -----------------------------------------*/
 
 ALTER TABLE Person ADD UNIQUE(personMail);
