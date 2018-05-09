@@ -1,0 +1,97 @@
+{% extends "front_layout.twig" %}
+
+{% block title %}Acceuil{% endblock %}
+
+{% block content %}
+	{% block nav %}
+		{{ parent() }}
+	{% endblock %}
+	
+    <!-- Header -->
+    <header class="masthead d-flex" id="page-top">
+      <div class="container text-center my-auto">
+	      	<div class="hexagon" id="profil">
+            <div class="face1">
+            </div>
+            <div class="face2"></div>
+          </div>
+        <h1 class="mb-1">Romain Rouault</h1>
+        <h3 class="mb-5">
+          <em>Développeur Web - PHP Symfony</em>
+        </h3>
+        <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Faisons connaissance</a>
+      </div>
+      <div class="overlay"></div>
+    </header>
+
+    <!-- About -->
+    <section class="content-section bg-light" id="about">
+      <div class="container text-center">
+        <div class="row">
+
+          <div class="col-lg-4 col-md-12">
+            <a data-toggle="modal" data-target="#cv-modal" href="#">
+              <div class="hexagon-container">
+                <div class="hexagon" id="CV">
+                    <div class="face1"></div>
+                    <div class="face2"></div>
+                </div>
+                <div class="hex-layer">
+                  <h2 class="hex-text">MON CV</h2>
+                </div>
+              </div>
+            </a>
+          </div>
+            
+          <div class="col-lg-4 col-md-12">
+            <a href="/blog/post/portfolio">
+              <div class="hexagon-container">
+                <div class="hexagon" id="portfolio">
+                    <div class="face1"></div>
+                    <div class="face2"></div>
+                </div>
+                <div class="hex-layer">
+                  <h2 class="hex-text">PORTFOLIO</h2>
+                </div>
+              </div>
+            </a>
+          </div>
+            
+          <div class="col-lg-4 col-md-12">
+            <a href="/blog/post/blog">
+              <div class="hexagon-container">
+                <div class="hexagon" id="blog">
+                    <div class="face1"></div>
+                    <div class="face2"></div>
+                </div>
+                <div class="hex-layer">
+                  <h2 class="hex-text">BLOG</h2>
+                </div>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- Contact -->
+    <section class="content-section bg-blue" id="contact">
+      <div class="container">
+        <h2>Contact</h2>
+        <p>Un projet web? Besoin d'aide pour la maintenance de votre site? N'hésitez pas à me contacter.</p>
+        <div id="contact-form">
+          {{include('contact_form.twig')}}
+        </div>
+      </div>
+    </section>
+
+{% endblock %}
+
+
+{% block modal %}
+
+  {{parent()}}
+
+{% endblock %}

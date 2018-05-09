@@ -7,47 +7,49 @@
     {# the number of pages that are displayed around the active page #}
     {% set nearbyPagesLimit = 2 %}
 
-    <div class="pagination pagination-centered">
-        <ul>
+    <div class="container ml-5">
+        <nav>
+            <ul class="pagination">
 
-        {% if currentPage > 1 %}
-            <li><a href="{{ paginationPath }}{{ currentPage-1 }}">&larr;</a></li>
+            {% if currentPage > 1 %}
+                <li class="page-item" ><a href="{{ paginationPath }}{{ currentPage-1 }}" class="page-link">&larr;</a></li>
 
-            {% for i in range(1, extremePagesLimit) if ( i < currentPage - nearbyPagesLimit ) %}
-                <li><a href="{{ paginationPath }}{{ i }}">{{ i }}</a></li>
-            {% endfor %}
+                {% for i in range(1, extremePagesLimit) if ( i < currentPage - nearbyPagesLimit ) %}
+                    <li class="page-item"><a href="{{ paginationPath }}{{ i }} class="page-link"">{{ i }}</a></li>
+                {% endfor %}
 
-            {% if extremePagesLimit + 1 < currentPage - nearbyPagesLimit %}
-                <li class="disabled"><a href="#">...</a></li>
+                {% if extremePagesLimit + 1 < currentPage - nearbyPagesLimit %}
+                    <li class="disabled page-item"><a href="#" class="page-link">...</a></li>
+                {% endif %}
+
+                {% for i in range(currentPage-nearbyPagesLimit, currentPage-1) if ( i > 0 ) %}
+                    <li class="page-item"><a href="{{ paginationPath }}{{ i }}" class="page-link">{{ i }}</a></li>
+                {% endfor %}
+
+            {% elseif showAlwaysFirstAndLast %}
+                <li class="page-item"><a href="#" class="page-link">Previous</a></li>
             {% endif %}
 
-            {% for i in range(currentPage-nearbyPagesLimit, currentPage-1) if ( i > 0 ) %}
-                <li><a href="{{ paginationPath }}{{ i }}">{{ i }}</a></li>
-            {% endfor %}
+            <li class="page-item active"><a href="#" class="page-link">{{ currentPage }}</a></li>
 
-        {% elseif showAlwaysFirstAndLast %}
-            <li><a href="#">Previous</a></li>
-        {% endif %}
+            {% if currentPage < lastPage %}
+                {% for i in range(currentPage+1, currentPage + nearbyPagesLimit) if ( i <= lastPage ) %}
+                    <li class="page-item"><a href="{{ paginationPath }}{{ i }}" class="page-link">{{ i }}</a></li>
+                {% endfor %}
 
-        <li class="active"><a href="#">{{ currentPage }}</a></li>
+                {% if  (lastPage - extremePagesLimit) > (currentPage + nearbyPagesLimit) %}
+                   <li class="disabled page-item"><a href="#" class="page-link">...</a></li>
+                {% endif %}
 
-        {% if currentPage < lastPage %}
-            {% for i in range(currentPage+1, currentPage + nearbyPagesLimit) if ( i <= lastPage ) %}
-                <li><a href="{{ paginationPath }}{{ i }}">{{ i }}</a></li>
-            {% endfor %}
+                {% for i in range(lastPage - extremePagesLimit+1, lastPage) if ( i > currentPage + nearbyPagesLimit ) %}
+                   <li class="page-item"><a href="{{ paginationPath }}{{ i }}" class="page-link">{{ i }}</a></li>
+                {% endfor %}
 
-            {% if  (lastPage - extremePagesLimit) > (currentPage + nearbyPagesLimit) %}
-               <li class="disabled"><a href="#">...</a></li>
+                <li><a href="{{ paginationPath }}{{ currentPage+1 }}" class="page-link">&rarr;</a></li>
+            {% elseif showAlwaysFirstAndLast %}
+                    <li class="page-item"><a href="{{ paginationPath }}{{ currentPage+1 }}">Next</a></li>
             {% endif %}
-
-            {% for i in range(lastPage - extremePagesLimit+1, lastPage) if ( i > currentPage + nearbyPagesLimit ) %}
-               <li><a href="{{ paginationPath }}{{ i }}">{{ i }}</a></li>
-            {% endfor %}
-
-            <li><a href="{{ paginationPath }}{{ currentPage+1 }}">&rarr;</a></li>
-        {% elseif showAlwaysFirstAndLast %}
-                <li><a href="{{ paginationPath }}{{ currentPage+1 }}">Next</a></li>
-        {% endif %}
-        </ul>
+            </ul>
+        </nav>
     </div>
 {% endif %}

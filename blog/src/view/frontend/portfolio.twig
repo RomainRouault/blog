@@ -1,0 +1,75 @@
+{% extends "front_layout.twig" %}
+
+{% block title %}Portfolio{% endblock %}
+
+{% block body %}
+	<body id="portfolio">
+
+		{% block content %}
+			{% block nav %}
+				{{ parent() }}
+			{% endblock %}
+			
+			<!-- Header -->
+			<header class="masthead d-flex" id="page-top">
+			  <div class="container text-center my-auto">
+			    <h1 class="mb-1">Portfolio</h1>
+			   </div>
+			</header>
+
+			<!-- content -->
+			<div class="bg-light">
+				<div class="container">
+					<div class="row">
+						<!-- bib92 -->
+						<div class="col-lg-6 col-md-12">
+							<div class="project text-center p-4 mr-2 ml-2 mb-4 bg-ligh-blue" id="bib92">
+								<h2 >Bib92</h2>
+								<div class="port-screen">
+									<img src="{{asset('img/bib92.png')}}">
+								</div>
+								<div class="text-left">
+									<p>Refonte complète du site de l'association de bibliothécaires Bib92.</p>
+									<p>Création d'un template Joomla! 3.</p>
+									<p>Migration des données de Joomla 2.5 vers la nouvelle version puis vers un nouveau serveur.</p>
+									<p>Technologie utilisée : Joomla!, PHP, Javascript, Bootstrap 3.</p>
+								</div>
+								<a class="btn btn-primary" href="http://bib92.org">Visiter le site</a>
+							</div>
+						</div>
+
+						<!-- mediatheque newsletter -->
+						<div class="col-lg-6 col-md-12">
+							<div class="project text-center p-4 mr-2 ml-2 mb-4 bg-ligh-blue" id="cca">
+								<h2>Newsletter médiathèques CCA</h2>
+								<div class="port-screen">
+									<img src="{{asset('img/cca.png')}}">
+								</div>
+								<div class="text-left">
+									<p>En développement pour les <a href="http://mediatheques.cca.bzh">médiathèques de Concarneau Cornouaille Agglomération</a>.</p>
+									<p>Technologie utilisée : Foundation for emails</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		{% endblock %}
+
+		{% block footer %}
+		{{parent()}}
+        {% endblock %}  
+
+      {% block modal %}
+		{{parent()}}
+      {% endblock %}
+
+
+	  {% block javascripts %}
+		{{parent()}}
+	  {% endblock %}
+
+	</body>
+
+{% endblock %}

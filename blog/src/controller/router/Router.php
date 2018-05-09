@@ -26,7 +26,6 @@ class Router
         
         //parse URI
         $parsedRequest = parse_url($request);
-
         //call method to set the paths attribute
         $this->setPaths($parsedRequest);
 
@@ -47,7 +46,7 @@ class Router
         //filter array and set paths attribute
         $paths = array_filter($paths, 'is_string');
         $paths = array_filter($paths);
-
+        
         //set attribute
         $this->paths = $paths;
     }
@@ -120,7 +119,7 @@ class Router
     *
     * Memo for the paths values :
     *   path[1] = 'blog';
-    *   path[2] = controller;
+    *   path[2] = controller or 'assets';
     *   path[3] = method;
     */
     public function getControllerMethodFront()
@@ -141,15 +140,16 @@ class Router
                 $controller = new $controller();
                 //call method
                 $controller->$method();
-            } else { // if method/path does not exist
+            }
+            else { // if method/path does not exist
                 $PostController = new PostController();
                 //default main page
-                $PostController->Blog();
+                $PostController->home();
             }
         } else { //if there is no third path, we want the main page
             $PostController = new PostController();
             //default main page
-            $PostController->Blog();
+            $PostController->home();
         }
     }
 }
