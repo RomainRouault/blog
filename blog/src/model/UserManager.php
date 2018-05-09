@@ -8,7 +8,7 @@ namespace Blog\Model;
 */
 class UserManager extends Manager
 {
-    public function getUser($pendingUserData)
+    public function getUserByMail($pendingUserData)
     {
         $db = $this->dbConnect();
 
@@ -30,5 +30,15 @@ class UserManager extends Manager
         $affectedLines = $req->execute();
 
         return $affectedLines;
+    }
+
+    public function getUsersList()
+    {
+        $db = $this->dbConnect();
+
+        $req = $db->query('SELECT idPerson, personPseudo, personMail, personPass, personRole FROM person');
+        $users = $req->fetchall();
+
+        return $users;
     }
 }

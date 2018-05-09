@@ -1,168 +1,279 @@
 {% extends "layout.twig" %}
 
-{% block nav %}
-	{% if session.pseudo is defined %}
-		<nav>Bonjour {{ session.pseudo }}</nav>
-	{% endif %}
-{% endblock %}
-
-{% block footer %}
-<div style="margin-left : 50px">	
-	{% if session.pseudo is defined %}
-		<a href="/blog/authentification/logout"><strong>Déconnexion</strong></a>
-	{% else %}
-		<a data-toggle="modal" data-target="#auth" href="#"><strong>Connexion</strong></a>		
-	{% endif %}
-	{% if session.role == 'admin' %}
-		<a href="/blog/administrator/"><strong>Administration</strong></a>
-	{% endif %}
-
-
-</div>
-{% endblock %}
-
-{% block modal %}
-
-	<!-- front modal (info) -->
-	<div id="front-modal" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-dialog-centered ">
-		    <!-- Modal content-->
-		    <div class="modal-content">
-			    <div class="modal-header">
-				    <h4 class="modal-title">Information</h4>
-			    </div>
-			    <div class="modal-body">
-	                  {% if session.message is defined %}
-	                    <strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
-	                  {% endif %}
-				    <div class="modal-footer">
-					    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
-					</div>
-			    </div>
-		  	</div>
-		</div>
-	</div>
-
-
-	<!-- authentification modal -->
-	<div id="auth" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-dialog-centered ">
-		    <!-- Modal content-->
-		    <div class="modal-content">
-			    <div class="modal-header">
-				    <h4 class="modal-title">Connexion</h4>
-			    </div>
-			    <div class="modal-body">
-			    	<form method="post" action="/blog/authentification/isregistred">
-
-						<div class="form-group">
-							<label for="post-title">Email</label>
-							<input type="email" class="form-control" id="auth_mail" name="userMail" aria-describedby="votre email" placeholder="Votre adresse email">
-						</div>
-
-					    <div class="form-group">
-						    <label for="post-chapo">Votre mot de passe</label>
-						    <input type="password" class="form-control" id="auth_mp" name="userPass" aria-describedby="votre mot de passe">
-					  	</div>
-
-					  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
-
-					  	<button type="submit" class="btn btn-primary">Se connecter</button>
-					</form>
-
-					<p>Pas de compte? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#reg">Inscrivez-vous</a></p>
-
-				    <div class="modal-footer">
-				    	{% if session.message is defined and session.message_origin == 'auth' %}
-							<strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
-						{% endif %}
-					    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
-					</div>
-			    </div>
-		  	</div>
-		</div>
-	</div>
-
-	 <!-- registration modal -->
-	<div id="reg" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-dialog-centered ">
-		    <!-- Modal content-->
-		    <div class="modal-content">
-			    <div class="modal-header">
-				    <h4 class="modal-title">Créer un compte</h4>
-			    </div>
-			    <div class="modal-body">
-			    	<form method="post" action="/blog/authentification/adduser">
-
-			    		
-						<div class="form-group">
-							<label for="post-title">Pseudonyme</label>
-							<input type="text" class="form-control" id="reg_pseudo" name="userPseudo" aria-describedby="votre pseudonyme" placeholder="Votre pseudonyme">
-			    			<small id="reg_pseudo" class="form-text text-muted">Les espace ne sont pas acceptés.</small>
-						</div>
-
-						<div class="form-group">
-							<label for="post-title">Email</label>
-							<input type="email" class="form-control" id="reg_mail" name="userMail" aria-describedby="votre email" placeholder="Votre adresse email">
-						</div>
-
-					    <div class="form-group">
-						    <label for="post-chapo">Votre mot de passe</label>
-						    <input type="password" class="form-control" id="reg_mp" name="userPass" aria-describedby="votre mot de passe">
-						    <small id="reg_pseudo" class="form-text text-muted">Les espace ne sont pas acceptés.</small>
-					  	</div>
-
-					  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
-
-					  	<button type="submit" class="btn btn-primary">S'enregistrer</button>
-					</form>
-					
-				    <div class="modal-footer">
-				    	{% if session.message is defined and session.message_origin == 'reg' %}
-							<strong><p style="color: red; margin: auto;">{{ session.message }}</p></strong>
-						{% endif %}
-					    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
-					</div>
-			    </div>
-		  	</div>
-		</div>
-	</div>
-
-{% endblock %}
-
-{% block javascripts %}
+{% block head %}
 	{{ parent() }}
+	
+	{% block stylesheets %}
+	{{ parent() }}
+	{# style inpired from stylish-portfolio's startbootstrap theme #}
+	  <link href="{{ asset('css/front/stylish-portfolio.css') }}" rel="stylesheet" />
+	  <link href="{{  asset('css/front/responsive-hex.css') }}" rel="stylesheet"> 
+	  <link href="{{  asset('css/front/custom.css') }}" rel="stylesheet"> 
+	{% endblock %}
+{% endblock %}
 
-	{# Scripts for automaticaly display the modal if there is error message to display #}
-	{% if session.message is defined %}
+{% block body %}
+    {% block content %}
+
+		{% block nav %}
+			<a class="menu-toggle rounded" href="#">
+		      <i class="fa fa-bars"></i>
+		    </a>
+		    <nav id="sidebar-wrapper">
+		      <ul class="sidebar-nav">
+		        <li class="sidebar-brand">
+		          <a class="js-scroll-trigger" href="#page-top">Bonjour {% if session.pseudo is defined %}{{ session.pseudo }}{% else %}visiteur{% endif %}
+		</a>
+		        </li>
+		        <li class="sidebar-nav-item">
+		          <a class="js-scroll-trigger" href="/blog#page-top">Acceuil</a>
+		        </li>
+		        <li class="sidebar-nav-item">
+		          <a class="js-scroll-trigger" data-toggle="modal" data-target="#cv-modal" href="#">Mon CV</a>
+		        </li>
+		        <li class="sidebar-nav-item">
+		          <a class="js-scroll-trigger" href="/blog/post/portfolio">Porfolio</a>
+		        </li>
+		        <li class="sidebar-nav-item">
+		          <a class="js-scroll-trigger" href="/blog/post/blog">Blog</a>
+		        </li>
+		        <li class="sidebar-nav-item">
+		          <a class="js-scroll-trigger" href="/blog#contact">Contact</a>
+		        </li>
+		      </ul>
+
+		        <ul class="sidebar-nav" id="authentification-nav">
+		        	<li class="sidebar-nav-item">
+		        		{% if session.role == 'admin' %}
+							<a href="/blog/administrator/">Administration</a>
+						{% endif %}
+			          {% if session.pseudo is defined %}
+							<a href="/blog/authentification/logout">Déconnexion</a>
+						{% else %}
+								<a data-toggle="modal" data-target="#auth" href="#">Connexion</a>	
+						{% endif %}
+					</li>
+		      	</ul>
+
+		    </nav>
+		{% endblock %}
+	{% endblock %}
+
+	{% block footer %}
+
+		<!-- Footer -->
+	    <footer class="footer text-center">
+	      <div class="container">
+	        <ul class="list-inline mb-5">
+	          <li class="list-inline-item">
+	            <a class="social-link rounded-circle text-white mr-3" href="https://twitter.com/RomainRouault">
+	              <i class="fa fa-lg fa-twitter" aria-hidden="true"></i>
+	            </a>
+	          </li>
+	          <li class="list-inline-item">
+	            <a class="social-link rounded-circle text-white mr-3" href="https://fr.linkedin.com/in/rouaultromain">
+	              <i class="fa fa-lg fa-linkedin" aria-hidden="true"></i>
+	            </a>
+	          </li>
+	          <li class="list-inline-item">
+	            <a class="social-link rounded-circle text-white" href="https://github.com/RomainRouault">
+	              <i class="fa fa-lg fa-github" aria-hidden="true"></i>
+	            </a>
+	          </li>
+	        </ul>
+
+	        <p class="text-muted small mb-0">Copyright &copy; Romain Rouault 2018</p>
+
+	      </div>
+
+	      	<div class="authentification">	
+	      		{% if session.role == 'admin' %}
+					<h4><a href="/blog/administrator/"><strong>Administration</strong></a></h4>
+				{% endif %}
+				{% if session.pseudo is defined %}
+					<h4><a href="/blog/authentification/logout"><strong>Déconnexion</strong></a></h4>
+				{% else %}
+					<h4><a data-toggle="modal" data-target="#auth" href="#"><strong>Connexion</strong></a></h4>	
+				{% endif %}
+			</div>
+
+	    </footer>
+		<!-- Scroll to Top Button-->
+		<a class="scroll-to-top rounded js-scroll-trigger" href="#page-top">
+		  <i class="fa fa-angle-up"></i>
+		</a>
+
+	{% endblock %}
+
+	{% block modal %}
+
+		<!-- front modal (info) -->
+		<div id="front-modal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-dialog-centered ">
+			    <!-- Modal content-->
+			    <div class="modal-content">
+				    <div class="modal-header">
+					    <h4 class="modal-title">Information</h4>
+				    </div>
+				    <div class="modal-body">
+		                  {% if session.message is defined %}
+		                    <strong><p style="margin: auto;">{{ session.message }}</p></strong>
+		                  {% endif %}
+					    <div class="modal-footer">
+						    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
+						</div>
+				    </div>
+			  	</div>
+			</div>
+		</div>
+
+
+		<!-- authentification modal -->
+		<div id="auth" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-dialog-centered ">
+			    <!-- Modal content-->
+			    <div class="modal-content">
+				    <div class="modal-header">
+					    <h4 class="modal-title">Connexion</h4>
+				    </div>
+				    <div class="modal-body">
+				    	<form method="post" action="/blog/authentification/isregistred">
+
+							<div class="form-group">
+								<label for="post-title">Email</label>
+								<input type="email" class="form-control" id="auth_mail" name="userMail" aria-describedby="votre email" placeholder="Votre adresse email">
+							</div>
+
+						    <div class="form-group">
+							    <label for="post-chapo">Votre mot de passe</label>
+							    <input type="password" class="form-control" id="auth_mp" name="userPass" aria-describedby="votre mot de passe">
+						  	</div>
+
+						  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
+
+						  	<button type="submit" class="btn btn-primary">Se connecter</button>
+						</form>
+
+						<p>Pas de compte? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#reg">Inscrivez-vous</a></p>
+
+					    <div class="modal-footer">
+					    	{% if session.message is defined and session.message_origin == 'auth' %}
+								<strong><p style="margin: auto;">{{ session.message }}</p></strong>
+							{% endif %}
+						    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
+						</div>
+				    </div>
+			  	</div>
+			</div>
+		</div>
+
+		 <!-- registration modal -->
+		<div id="reg" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-dialog-centered ">
+			    <!-- Modal content-->
+			    <div class="modal-content">
+				    <div class="modal-header">
+					    <h4 class="modal-title">Créer un compte</h4>
+				    </div>
+				    <div class="modal-body">
+				    	<form method="post" action="/blog/authentification/adduser">
+
+				    		
+							<div class="form-group">
+								<label for="post-title">Pseudonyme</label>
+								<input type="text" class="form-control" id="reg_pseudo" name="userPseudo" aria-describedby="votre pseudonyme" placeholder="Votre pseudonyme">
+				    			<small id="reg_pseudo" class="form-text text-muted">Les espace ne sont pas acceptés.</small>
+							</div>
+
+							<div class="form-group">
+								<label for="post-title">Email</label>
+								<input type="email" class="form-control" id="reg_mail" name="userMail" aria-describedby="votre email" placeholder="Votre adresse email">
+							</div>
+
+						    <div class="form-group">
+							    <label for="post-chapo">Votre mot de passe</label>
+							    <input type="password" class="form-control" id="reg_mp" name="userPass" aria-describedby="votre mot de passe">
+							    <small id="reg_pseudo" class="form-text text-muted">Les espace ne sont pas acceptés.</small>
+						  	</div>
+
+						  	<div class="g-recaptcha" data-sitekey="6LcXL0EUAAAAADF9IEJp1icrykq7unzRIRPsXA4v"></div>
+
+						  	<button type="submit" class="btn btn-primary">S'enregistrer</button>
+						</form>
+						
+					    <div class="modal-footer">
+					    	{% if session.message is defined and session.message_origin == 'reg' %}
+								<strong><p style="margin: auto;">{{ session.message }}</p></strong>
+							{% endif %}
+						    <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
+						</div>
+				    </div>
+			  	</div>
+			</div>
+		</div>
+
 		
-		{% if session.message_origin == 'auth' %}
+	  <!-- cv modal -->
+	  <div id="cv-modal" class="modal fade" role="dialog">
+	    <div class="modal-dialog modal-lg modal-dialog-centered ">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	          <div class="modal-header">
+	            <h4 class="modal-title">CV</h4>
+	          </div>
+	          <div class="modal-body">
+	                <embed src="{{asset('pdf/CV_ROUAULT_ROMAIN.pdf')}}" frameborder="0" width="100%" height="400px">
+	                <a href="{{asset('pdf/CV_ROUAULT_ROMAIN.pdf')}}" download="CV_ROUAULT_ROMAIN"><button type="button" class="btn btn-default back-blue">Télécharger</button></a>
+	            <div class="modal-footer">
+	              <button type="button" class="btn btn-default back-blue" data-dismiss="modal">Fermer</button>
+	          </div>
+	          </div>
+	        </div>
+	    </div>
+	  </div>
 
-			<script type='text/javascript'>
-				$(document).ready(function(){
-					$('#auth').modal('show');
-				})
-			</script>;
 
-		{% elseif session.message_origin == 'front-modal' %}
-			<script type='text/javascript'>
-				$(document).ready(function(){
-					$('#front-modal').modal('show');
-				})
-			</script>;
-		{% else %}
+	{% endblock %}
 
-			<script type='text/javascript'>
-				$(document).ready(function(){
-					$('#reg').modal('show');
-				})
-			</script>;
+	{% block javascripts %}
+		{{ parent() }}
+		{# jquery easing plugin #}
+		<script src="{{ asset('js/jquery.easing.min.js') }}"></script>
+
+		{# Script for stylish portfolio bootstrap theme #}
+		<script src="{{ asset('js/stylish-portfolio.js') }}"></script>
+		
+		{# Scripts for automaticaly display the modal if there is error message to display #}
+		{% if session.message is defined %}
 			
+			{% if session.message_origin == 'auth' %}
+
+				<script type='text/javascript'>
+					$(document).ready(function(){
+						$('#auth').modal('show');
+					});
+				</script>
+
+			{% elseif session.message_origin == 'front-modal' %}
+				<script type='text/javascript'>
+					$(document).ready(function(){
+						$('#front-modal').modal('show');
+					});
+				</script>
+			{% else %}
+
+				<script type='text/javascript'>
+					$(document).ready(function(){
+						$('#reg').modal('show');
+					});
+				</script>
+				
+			{% endif %}
+
+
 		{% endif %}
 
-
-	{% endif %}
-
-	{# Recaptcha : Prevent Brute Force attack and spam #}
-	<script src='https://www.google.com/recaptcha/api.js'></script>
+		{# Recaptcha : Prevent Brute Force attack and spam #}
+		<script src='https://www.google.com/recaptcha/api.js'></script>
+	{% endblock %}
 {% endblock %}

@@ -19,6 +19,21 @@
 		  </div>
 
 		    <div class="form-group">
+		    	 <label for="post-author">Auteur</label>
+			    <select type="select" class="form-control" id="form-control" name="idPerson" aria-describedby="post-Author">
+			    	{% for user in users %}
+				    	{% if user.personRole == 'admin' %}
+				    		{% if user.idPerson == post.idPerson %}
+					    		<option value="{{user.idPerson}}" selected>{{user.personPseudo}} (auteur d'origine)</option>
+					    	{% elseif user.idPerson != post.idPerson %}
+					    		<option value="{{user.idPerson}}">{{user.personPseudo}}</option>
+				    		{% endif %}
+				    	{% endif %}
+				    {% endfor %}
+			   	</select>
+		  	</div>
+
+		    <div class="form-group">
 			    <label for="post-chapo">Chapô</label>
 			    <input type="text" class="form-control" id="postChapo" name="postChapo" aria-describedby="post-chapô" value="{{ post.postChapo }}">
 			    <small id="chapoHelp" class="form-text text-muted">Texte court qui résume votre article.</small>
