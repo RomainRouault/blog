@@ -39,11 +39,6 @@ class Post extends Entity
         return $this->postContent;
     }
 
-    public function postTag()
-    {
-        return $this->postTag;
-    }
-
     public function postCreation()
     {
         return $this->postCreation;
@@ -79,13 +74,6 @@ class Post extends Entity
     {
         if (is_string($postContent)) {
             $this->postContent = $postContent;
-        }
-    }
-
-    public function setPostTag($postTag)
-    {
-        if (is_string($postTag)) {
-            $this->postTag = $postTag;
         }
     }
 
