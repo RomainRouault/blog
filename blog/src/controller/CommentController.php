@@ -39,41 +39,39 @@ class CommentController extends Controller
     public function newComment()
     {
         //first, check the user with recaptcha API (return true if success)
-        /*if ($this->recaptcha())
-        {*/
-        //if post have been submited
-        if (!empty($_POST['commentPseudo']) && !empty($_POST['commentContent']) && !empty($_POST['token']) && !empty($_SESSION['token'])) {
-            // Token checking (prevent CRSF attack)
-            if ($_SESSION['token'] == $_POST['token']) {
-                //call entity "Comment"
-                $comment = new Comment($_POST);
+        if ($this->recaptcha()) {
+            //if post have been submited
+            if (!empty($_POST['commentPseudo']) && !empty($_POST['commentContent']) && !empty($_POST['token']) && !empty($_SESSION['token'])) {
+                // Token checking (prevent CRSF attack)
+                if ($_SESSION['token'] == $_POST['token']) {
+                    //call entity "Comment"
+                    $comment = new Comment($_POST);
 
-                //call manager
-                $commentManager = new commentManager();
+                    //call manager
+                    $commentManager = new commentManager();
 
-                $affectedlines = $commentManager->addComment($comment, intval($_GET['id']));
+                    $affectedlines = $commentManager->addComment($comment, intval($_GET['id']));
 
-                //if submission have failed, throw a message
-                if ($affectedlines === false) {
-                    $this->setMessage('Erreur : Impossible d\'ajouter le commentaire', 'front-modal');
-                    header('Location: /blog/post/blogpost?id='.$_GET['id']);
-                } else {
-                    $this->setMessage('Votre commentaire a été soumis à un administrateur pour validation', 'front-modal');
-                    header('Location: /blog/post/blogpost?id='.$_GET['id']);
+                    //if submission have failed, throw a message
+                    if ($affectedlines === false) {
+                        $this->setMessage('Erreur : Impossible d\'ajouter le commentaire', 'front-modal');
+                        header('Location: /blog/post/blogpost?id='.$_GET['id']);
+                    } else {
+                        $this->setMessage('Votre commentaire a été soumis à un administrateur pour validation', 'front-modal');
+                        header('Location: /blog/post/blogpost?id='.$_GET['id']);
+                    }
+                } else { //token dont match, throw a message
+                    $this->setMessage('Erreur : Impossible d\'ajouter le commentaire.', 'front-modal');
+                    header('location: /blog/post/blogpost?id='.$_GET['id']);
                 }
-            } else { //token dont match, throw a message
-                $this->setMessage('Erreur : Impossible d\'ajouter le commentaire.', 'front-modal');
-                header('location: /blog/post/blogpost?id='.$_GET['id']);
+            } else { //if a comment have been submited, but not fully completed, throw a message
+                $this->setMessage('Merci de remplir tout les champs', 'front-modal');
+                header('Location: /blog/post/blogpost?id='.$_GET['id']);
             }
-        } else { //if a comment have been submited, but not fully completed, throw a message
-            $this->setMessage('Merci de remplir tout les champs', 'front-modal');
-            header('Location: /blog/post/blogpost?id='.$_GET['id']);
-        }
-        /*} else {
+        } else {
             $this->setMessage('Erreur : Impossible d\'ajouter le commentaire.', 'front-modal');
             header('location: /blog/post/blogpost?id='.$_GET['id']);
-
-        }*/
+        }
     }
 
     /**
