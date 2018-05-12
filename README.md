@@ -19,6 +19,10 @@ php composer.phar update
 
 Learn more about [composer](https://getcomposer.org/doc/01-basic-usage.md) here.
 
+## Documentation :
+
+Consult [Index.php](https://github.com/RomainRouault/blog/blob/master/documentation/index.html) in documentation directory.
+
 ## Build with :
 
 * PHP 7.1
